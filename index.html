@@ -1,0 +1,1256 @@
+<!doctype html>
+<html lang="en" class="loading">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#28251f">
+  <title>Phương Anh — Issue Nº22</title>
+  <meta name="description" content="A private edition for Phương Anh. Issue Nº22, October 31, 2026.">
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Link preview (Facebook / Messenger / Zalo). tools/render-assets.sh rewrites og:url and og:image to absolute URLs. -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hieudeptrai196.github.io/phuong_anh/">
+  <meta property="og:title" content="Phương Anh — Issue Nº22">
+  <meta property="og:description" content="A private edition, published once a year, every October 31.">
+  <meta property="og:image" content="https://hieudeptrai196.github.io/phuong_anh/assets/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Be+Vietnam+Pro:wght@400;500&display=swap">
+  <style>
+    :root {
+      --paper: #f3eee8;
+      --ink: #28251f;
+      --white: #fbf8f4;
+      --peach: #ead1c2;
+      --blue: #dce5ed;
+      --butter: #eee6bd;
+      --lilac: #e4dfe8;
+      --rule: rgba(40, 37, 31, .22);
+      --gutter: clamp(18px, 4.5vw, 72px);
+      --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --sans: 'Be Vietnam Pro', Arial, Helvetica, sans-serif;
+      --ease: cubic-bezier(.22, .75, .25, 1);
+      --ease-io: cubic-bezier(.76, 0, .24, 1);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); color: var(--ink); }
+    html.loading { overflow: hidden; }
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    body { margin: 0; font-family: var(--sans); background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    ::selection { background: var(--ink); color: var(--paper); }
+    a { color: inherit; }
+    img { -webkit-user-drag: none; user-select: none; }
+    .serif { font-family: var(--serif); font-weight: 400; }
+    .label { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+    .bleed { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* Focal points: keep her face in frame when portrait photos are cropped to landscape. */
+    .cover-media img { object-position: 50% 13%; }
+    .s-portrait .layer img { object-position: 50% 54%; transform-origin: 46% 60%; }
+    .half.a img { object-position: 63% 50%; }
+    .half.b img { object-position: 52% 50%; }
+    /* Landscape screens: portrait photos have no sideways slack, so nudge with a slight zoom. */
+    @media (min-aspect-ratio: 1/1) {
+      .ready .cover .cover-media img { transform: translateX(5%) scale(1.12); }
+      /* Both travel portraits sit high in frame: keep the title in the sky above their heads. */
+      .s-travel .t-mark { top: 14%; font-size: clamp(56px, 9vw, 160px); }
+    }
+    .s-grad .layer img { object-position: 100% 42%; }
+
+    /* ---------- Rolling digits ---------- */
+    .roller { display: inline-flex; font-variant-numeric: lining-nums tabular-nums; vertical-align: bottom; }
+    .roller .digit { display: inline-block; height: 1.1em; line-height: 1.1; overflow: hidden; }
+    .roller .reel { display: flex; flex-direction: column; transition: transform .9s var(--ease); }
+    .roller .reel span { display: block; height: 1.1em; }
+
+    /* ---------- Save-this-page icon ---------- */
+    .dl {
+      display: inline-grid; place-items: center; width: 24px; height: 24px; margin-left: 12px; vertical-align: middle;
+      border: 1px solid currentColor; border-radius: 50%; color: inherit; opacity: .55; cursor: pointer;
+      transition: opacity .3s, transform .3s var(--ease);
+    }
+    .dl:hover, .dl:focus-visible { opacity: 1; transform: translateY(1px); outline: none; }
+    .dl svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ?shot=<page> renders one page in its final state, chrome-free, for the downloadable images. */
+    .shot .runner, .shot .grain, .shot .cursor, .shot .toc-preview, .shot .loader, .shot .dl, .shot .dim { display: none !important; }
+    .shot *, .shot *::before, .shot *::after { transition: none !important; animation: none !important; }
+
+    /* ---------- Film grain ---------- */
+    .grain {
+      position: fixed; inset: -50%; z-index: 90; pointer-events: none; opacity: .07;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grain 1.2s steps(6) infinite;
+    }
+    @keyframes grain {
+      0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -3%); }
+      60% { transform: translate(-2%, -1%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); }
+    }
+
+    /* ---------- Preloader / start gate ---------- */
+    .loader {
+      position: fixed; inset: 0; z-index: 100; background: var(--ink); color: var(--white);
+      display: grid; grid-template-rows: auto 1fr auto; padding: 22px var(--gutter) 26px;
+      clip-path: inset(0 0 0 0); transition: clip-path 1.15s var(--ease-io);
+    }
+    .loader.done { clip-path: inset(0 0 100% 0); }
+    .loader-top, .loader-bottom { display: flex; justify-content: space-between; gap: 18px; }
+    .loader-center { align-self: center; justify-self: center; display: grid; justify-items: center; }
+    .loader-num { font-family: var(--serif); font-size: clamp(120px, 26vw, 400px); line-height: .8; letter-spacing: -.05em; font-variant-numeric: lining-nums tabular-nums; transition: transform 1.3s var(--ease-io); }
+    .loader-num sup { font-size: .14em; letter-spacing: .1em; vertical-align: top; margin-left: .3em; font-style: italic; }
+    .loader.armed .loader-num { transform: scale(.58) translateY(-12%); }
+    .loader-bar { height: 1px; background: rgba(251,248,244,.2); margin-bottom: 14px; position: relative; }
+    .loader-bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--white); }
+    .gate { display: grid; justify-items: center; gap: 28px; margin-top: -2vh; opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 1s var(--ease) .45s, transform 1.2s var(--ease) .45s; }
+    .loader.armed .gate { opacity: 1; transform: none; pointer-events: auto; }
+    .gate p { margin: 0; font-family: var(--serif); font-style: italic; font-size: clamp(20px, 2.2vw, 30px); letter-spacing: -.01em; text-align: center; }
+    .countdown { display: grid; justify-items: center; gap: 12px; }
+    .countdown[hidden] { display: none; }
+    .sound-btn { appearance: none; border: 0; background: none; color: inherit; cursor: pointer; padding: 6px 10px; font: 500 9px/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; opacity: .6; display: inline-flex; align-items: center; gap: 8px; transition: opacity .3s; }
+    .sound-btn:hover, .sound-btn[aria-pressed="true"] { opacity: 1; }
+    .sound-btn i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; border: 1px solid currentColor; }
+    .sound-btn[aria-pressed="true"] i { background: currentColor; animation: pulse 1s steps(1) infinite; }
+    @keyframes pulse { 50% { opacity: .2; } }
+    .cd-row { display: flex; align-items: flex-start; gap: clamp(10px, 1.6vw, 22px); font-family: var(--serif); font-size: clamp(30px, 3.6vw, 52px); line-height: 1.1; }
+    .cd { display: grid; justify-items: center; gap: 6px; }
+    .cd small { font-family: var(--sans); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; opacity: .6; }
+    .cd-row b { font-weight: 400; opacity: .4; }
+    .open-btn {
+      appearance: none; cursor: pointer; position: relative; width: 132px; height: 132px; border-radius: 50%;
+      border: 1px solid rgba(251,248,244,.7); background: transparent; color: var(--white);
+      font: 500 10px/1.5 var(--sans); letter-spacing: .18em; text-transform: uppercase;
+      transition: background .5s var(--ease), color .5s var(--ease), transform .5s var(--ease), opacity .5s;
+    }
+    .open-btn::after { content: ''; position: absolute; inset: -1px; border-radius: 50%; border: 1px solid rgba(251,248,244,.5); animation: ring 2.6s var(--ease) infinite; pointer-events: none; }
+    @keyframes ring { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(1.45); opacity: 0; } }
+    .open-btn:not(:disabled):hover, .open-btn:not(:disabled):focus-visible { background: var(--white); color: var(--ink); outline: none; }
+    .open-btn:not(:disabled):active { transform: scale(.96); }
+    .open-btn:disabled { cursor: default; opacity: .45; }
+    .open-btn:disabled::after { animation: none; opacity: 0; }
+
+    /* ---------- Cursor (fine pointers only) ---------- */
+    .cursor { display: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .cursor {
+        display: grid; place-items: center; position: fixed; left: 0; top: 0; z-index: 110; pointer-events: none;
+        width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff; mix-blend-mode: difference;
+        transition: width .45s var(--ease), height .45s var(--ease), margin .45s var(--ease);
+      }
+      .cursor span { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #000; opacity: 0; transition: opacity .3s; }
+      .cursor.big { width: 78px; height: 78px; margin: -39px 0 0 -39px; }
+      .cursor.big span { opacity: 1; }
+    }
+
+    /* ---------- Running header ---------- */
+    .runner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 80; pointer-events: none;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px;
+      padding: calc(14px + env(safe-area-inset-top, 0px)) var(--gutter) 14px;
+      color: #fff; mix-blend-mode: difference;
+      opacity: 0; transform: translateY(-100%); transition: opacity .7s var(--ease), transform .7s var(--ease);
+    }
+    .runner.on { opacity: 1; transform: none; }
+    .runner-name { font-family: var(--serif); font-size: 19px; letter-spacing: -.01em; white-space: nowrap; }
+    .runner-name i { font-size: 12px; margin-left: 8px; letter-spacing: .06em; }
+    .runner-chapter { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; text-align: center; white-space: nowrap; }
+    .runner-page { justify-self: end; font-family: var(--serif); font-style: italic; font-size: 17px; display: flex; gap: 6px; align-items: baseline; }
+
+    /* ---------- Cover ---------- */
+    .cover { position: relative; height: 100svh; min-height: 560px; overflow: hidden; color: var(--white); background: var(--ink); }
+    .cover-media { position: absolute; inset: 0; will-change: transform; }
+    .cover-media img { transform: scale(1.14); transition: transform 2.6s var(--ease); }
+    .ready .cover-media img { transform: scale(1); }
+    .cover::before, .cover::after { content: ''; position: absolute; left: 0; right: 0; z-index: 1; pointer-events: none; }
+    .cover::before { top: 0; height: 48%; background: linear-gradient(rgba(20,18,15,.52), transparent); }
+    .cover::after { bottom: 0; height: 55%; background: linear-gradient(transparent, rgba(20,18,15,.6)); }
+    .cover-ui { position: absolute; inset: 0; z-index: 2; display: grid; grid-template-rows: auto auto 1fr auto; padding: 22px var(--gutter) 26px; }
+    .cover-top, .cover-bottom { display: flex; justify-content: space-between; gap: 18px; }
+    .masthead { margin: 10px 0 0; font-family: var(--serif); font-weight: 400; text-align: center; font-size: clamp(46px, 13.2vw, 228px); letter-spacing: -.035em; line-height: .95; white-space: nowrap; will-change: transform, opacity; transform-origin: 50% 0; text-shadow: 0 2px 30px rgba(20,18,15,.28); }
+    .masthead .ch { display: inline-block; opacity: 0; transform: translateY(.35em); filter: blur(10px); transition: opacity 1.1s var(--ease), transform 1.3s var(--ease), filter 1.1s var(--ease); transition-delay: calc(.35s + var(--i) * 55ms); }
+    .ready .masthead .ch { opacity: 1; transform: none; filter: blur(0); }
+    .cover-lines { display: grid; grid-template-columns: 1fr 1fr; align-items: end; padding-bottom: 28px; }
+    .cover-lines > div { display: flex; flex-direction: column; gap: 26px; }
+    .cover-lines .right { align-items: flex-end; text-align: right; }
+    .line h3 { margin: 0 0 6px; font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2.5vw, 38px); line-height: 1; letter-spacing: -.02em; }
+    .line h3 em { font-style: italic; }
+    .line p { margin: 0; font-size: 10px; line-height: 1.55; letter-spacing: .12em; text-transform: uppercase; max-width: 30ch; }
+    .line.big h3 { font-size: clamp(40px, 5.4vw, 88px); line-height: .9; }
+    .cue { display: flex; align-items: center; gap: 10px; }
+    .cue i { width: 28px; height: 1px; background: currentColor; display: inline-block; transform-origin: left; animation: cue 2.4s var(--ease-io) infinite; }
+    .cue i:last-child { transform-origin: right; }
+    @keyframes cue { 0%, 100% { transform: scaleX(.3); } 50% { transform: scaleX(1); } }
+    .rise { opacity: 0; transform: translateY(18px); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease); }
+    .ready .rise { opacity: 1; transform: none; }
+    .d1 { transition-delay: .25s; } .d2 { transition-delay: .9s; } .d3 { transition-delay: 1.2s; }
+    .badge { position: absolute; z-index: 3; right: var(--gutter); top: 30%; width: clamp(96px, 9vw, 140px); aspect-ratio: 1; color: var(--white); }
+    .badge svg { width: 100%; height: 100%; animation: spin 22s linear infinite; filter: drop-shadow(0 1px 6px rgba(20,18,15,.45)); }
+    .badge text { font-family: var(--sans); font-size: 9.2px; letter-spacing: 2.1px; fill: currentColor; }
+    .badge b { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(28px, 2.8vw, 44px); letter-spacing: -.03em; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---------- Scroll reveal ---------- */
+    [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
+    [data-reveal].in { opacity: 1; transform: none; }
+    [data-reveal="wipe"] { opacity: 1; transform: translateY(.25em); clip-path: inset(0 0 100% 0); transition: clip-path 1.5s var(--ease-io), transform 1.5s var(--ease-io); }
+    [data-reveal="wipe"].in { clip-path: inset(-25% -6% -25% -6%); transform: none; }
+
+    /* ---------- Contents ---------- */
+    .contents { padding: 14vh var(--gutter) 16vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 5vw; }
+    .contents h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(56px, 8vw, 128px); letter-spacing: -.04em; line-height: .95; }
+    .contents .label { display: block; margin-top: 22px; }
+    .toc { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+    .toc li { border-bottom: 1px solid var(--rule); }
+    .toc a { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 18px; align-items: baseline; padding: 22px 0; text-decoration: none; transition: padding .6s var(--ease); }
+    .toc .no { font-size: 10px; letter-spacing: .14em; }
+    .toc .t { font-family: var(--serif); font-size: clamp(26px, 3vw, 42px); letter-spacing: -.02em; line-height: 1.05; }
+    .toc .t small { display: block; margin-top: 8px; font-family: var(--sans); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; line-height: 1.5; }
+    .toc .pg { font-family: var(--serif); font-style: italic; font-size: 18px; }
+    @media (hover: hover) and (pointer: fine) {
+      .toc a:hover { padding-left: 14px; }
+      .toc a:hover .t { font-style: italic; }
+      .toc:hover li a { opacity: .35; transition: opacity .4s, padding .6s var(--ease); }
+      .toc:hover li a:hover { opacity: 1; }
+    }
+    .toc-preview { position: fixed; left: 0; top: 0; z-index: 40; width: 230px; height: 300px; margin: -150px 0 0 -115px; pointer-events: none; overflow: hidden; clip-path: inset(50% 50% 50% 50%); transition: clip-path .6s var(--ease); display: none; }
+    .toc-preview.on { clip-path: inset(0 0 0 0); }
+    .toc-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.15); transition: opacity .4s, transform .8s var(--ease); }
+    .toc-preview img.on { opacity: 1; transform: scale(1); }
+    @media (hover: hover) and (pointer: fine) { .toc-preview { display: block; } }
+
+    /* ---------- Pinned full-bleed scenes ----------
+       Each scene overlaps the previous one by one screen (margin-top: -100svh), so the next
+       chapter slides over the pinned one like a turned page. */
+    .scene { position: relative; height: 360svh; }
+    .scene + .scene { margin-top: -100svh; }
+    .scene-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; transform-origin: 50% 40%; }
+    .scene + .scene .scene-pin, .letter { box-shadow: 0 -30px 70px -10px rgba(20, 18, 15, .45); }
+    .dim { position: absolute; inset: 0; z-index: 8; background: #14120f; opacity: 0; pointer-events: none; }
+    .scene-meta, .folio, .microcopy { position: absolute; z-index: 6; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #fff; mix-blend-mode: difference; }
+    .scene-meta { top: 64px; left: var(--gutter); right: var(--gutter); display: flex; justify-content: space-between; gap: 20px; }
+    .folio { left: var(--gutter); bottom: 24px; display: flex; gap: 14px; align-items: baseline; }
+    .folio b { font-family: var(--serif); font-weight: 400; font-size: 13px; letter-spacing: 0; }
+    .microcopy { right: var(--gutter); bottom: 25px; text-align: right; }
+    .layer { position: absolute; inset: 0; overflow: hidden; will-change: clip-path; }
+    .layer img { will-change: transform; }
+    .breathe { will-change: transform; }
+    .shade { position: absolute; inset: 0; pointer-events: none; z-index: 2; background: linear-gradient(transparent 45%, rgba(20,18,15,.6)); opacity: 0; }
+    .over { position: absolute; z-index: 4; color: var(--white); }
+
+    /* 01 Portrait */
+    .s-portrait .scene-pin { background: var(--peach); }
+    .p-title { position: absolute; z-index: 5; left: 0; right: 0; top: 26%; text-align: center; font-size: clamp(56px, 12vw, 210px); letter-spacing: -.045em; line-height: .9; white-space: nowrap; color: #fff; mix-blend-mode: difference; transform: translateY(-50%); pointer-events: none; }
+    .p-dek { left: var(--gutter); bottom: 72px; max-width: 30ch; font-size: 10px; line-height: 1.7; letter-spacing: .12em; text-transform: uppercase; opacity: 0; }
+
+    /* 02 Far / Away */
+    .s-travel .scene-pin { background: var(--butter); }
+    .half { position: absolute; top: 0; bottom: 0; width: 50%; overflow: hidden; margin: 0; }
+    .half.a { left: 0; } .half.b { right: 0; }
+    .half img { position: absolute; left: 0; top: -12%; width: 100%; height: 124%; object-fit: cover; will-change: transform; }
+    .half figcaption { position: absolute; z-index: 3; bottom: 64px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--white); text-shadow: 0 1px 8px rgba(0,0,0,.45); }
+    .half.a figcaption { left: var(--gutter); } .half.b figcaption { right: var(--gutter); text-align: right; }
+    .t-mark { position: absolute; z-index: 5; left: 50%; top: 50%; font-size: clamp(56px, 11vw, 190px); letter-spacing: -.05em; line-height: .9; white-space: nowrap; color: var(--white); text-shadow: 0 2px 40px rgba(0,0,0,.25); transform: translate(-50%, -50%); pointer-events: none; }
+    .t-mark em { font-style: italic; }
+    .seam { position: absolute; z-index: 4; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(251,248,244,.6); transform-origin: top; }
+
+    /* 03 Class of 2026 */
+    .s-grad .scene-pin { background: var(--ink); }
+    .g-cut { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; will-change: transform, opacity; }
+    .g-cut text { font-family: var(--serif); }
+    .g-note { right: var(--gutter); bottom: 72px; max-width: 26ch; text-align: right; font-size: 10px; line-height: 1.7; letter-spacing: .12em; text-transform: uppercase; opacity: 0; }
+    .g-kicker { left: var(--gutter); bottom: 64px; font-size: clamp(30px, 3.6vw, 58px); font-style: italic; letter-spacing: -.02em; line-height: 1; opacity: 0; }
+
+    /* 04 A New Chapter */
+    .s-work .scene-pin { background: var(--blue); }
+    /* The whole photo sits behind the frame at full size; a "camera" moves in along the road. */
+    .w-cam { position: absolute; left: 0; top: 0; max-width: none; height: auto; transform-origin: 0 0; will-change: transform; }
+    .vignette { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; background: radial-gradient(ellipse 70% 75% at 50% 45%, transparent 35%, rgba(20,18,15,.75) 100%); }
+    .w-caption { left: var(--gutter); bottom: 64px; font-size: clamp(48px, 7.4vw, 124px); line-height: .9; letter-spacing: -.04em; opacity: 0; }
+    .w-caption em { font-style: italic; display: block; padding-left: .6em; }
+    .w-small { right: var(--gutter); bottom: 72px; max-width: 24ch; text-align: right; font-size: 10px; line-height: 1.7; letter-spacing: .12em; text-transform: uppercase; opacity: 0; }
+
+    /* ---------- Letter from the Editor ---------- */
+    .letter { position: relative; margin-top: -100svh; background: var(--paper); padding: 18vh var(--gutter) 20vh; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr) minmax(0, 1fr); gap: 5vw; }
+    .letter-head { align-self: start; position: sticky; top: 14vh; }
+    .letter-head h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 5.6vw, 92px); letter-spacing: -.035em; line-height: .95; text-wrap: balance; }
+    .letter-head h2 em { font-style: italic; }
+    .letter-head .label { display: block; margin-top: 22px; }
+    .letter-body { font-family: var(--serif); font-size: clamp(21px, 1.9vw, 30px); line-height: 1.5; letter-spacing: -.005em; max-width: 30em; }
+    .letter-body p { margin: 0 0 1.1em; }
+    .letter-body p:first-child::first-letter { float: left; font-size: 4.2em; line-height: .8; padding: .06em .1em 0 0; }
+    .letter-body .w { opacity: .14; transition: opacity .25s linear; }
+    .letter-sign { margin-top: 2.2em; font-style: italic; }
+    .letter-sign span { display: block; font-family: var(--sans); font-style: normal; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; margin-top: 8px; }
+
+    /* ---------- Masthead (staff box) ---------- */
+    .staff { position: relative; padding: 14vh var(--gutter) 18vh; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 5vw; border-top: 1px solid var(--rule); }
+    .staff h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 5.6vw, 92px); letter-spacing: -.035em; line-height: .95; }
+    .staff h2 em { font-style: italic; }
+    .staff-head .label { display: block; margin-top: 22px; }
+    .staff-list { margin: 0; border-top: 1px solid var(--ink); }
+    .staff-row { display: grid; grid-template-columns: minmax(120px, 2fr) minmax(0, 5fr); gap: 24px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+    .staff-row dt { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+    .staff-row dd { margin: 0; font-family: var(--serif); font-size: clamp(20px, 1.8vw, 28px); letter-spacing: -.01em; line-height: 1.25; }
+    .staff-row dd em { font-style: italic; }
+
+    /* ---------- Back cover ---------- */
+    .back { position: relative; min-height: 100svh; background: var(--ink); color: var(--paper); padding: 64px var(--gutter) 26px; display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; }
+    .back-top, .back-bottom { display: flex; justify-content: space-between; gap: 18px; }
+    .back-center { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 5vw; padding: 10vh 0 6vh; }
+    .back h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(60px, 11vw, 190px); letter-spacing: -.045em; line-height: .88; }
+    .back h2 em { font-style: italic; display: block; padding-left: 8%; }
+    .back .dek { margin-top: 30px; max-width: 34ch; font-size: 10px; line-height: 1.7; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
+    .back-bottom { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+    .confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+    .gift { display: flex; flex-direction: column; align-items: center; }
+    .candle { appearance: none; border: 0; background: none; padding: 0 30px; margin-bottom: -2px; cursor: pointer; color: inherit; position: relative; z-index: 2; }
+    .candle svg { width: 46px; height: 150px; display: block; overflow: visible; }
+    .candle .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 1.6s ease-in-out infinite; transition: transform .5s var(--ease), opacity .4s; }
+    .candle .glow { transform-box: fill-box; transform-origin: center; animation: glow 1.6s ease-in-out infinite; transition: opacity .5s; }
+    .candle .smoke { opacity: 0; stroke-dasharray: 90; stroke-dashoffset: 90; }
+    .candle.out { cursor: default; }
+    .candle.out .flame { transform: scale(0, .2); opacity: 0; animation: none; }
+    .candle.out .glow { opacity: 0; animation: none; }
+    .candle.out .smoke { animation: smoke 2.4s var(--ease) forwards; }
+    .candle-hint { margin: 18px 0 16px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; opacity: .75; text-align: center; transition: opacity .5s; }
+    @keyframes flicker { 0%, 100% { transform: scale(1, 1) rotate(-1.5deg); } 35% { transform: scale(.94, 1.06) rotate(2deg); } 70% { transform: scale(1.04, .96) rotate(-.5deg); } }
+    @keyframes glow { 0%, 100% { opacity: .55; transform: scale(1); } 50% { opacity: .8; transform: scale(1.12); } }
+    @keyframes smoke { 0% { opacity: .7; stroke-dashoffset: 90; transform: translateY(0); } 100% { opacity: 0; stroke-dashoffset: 0; transform: translateY(-26px); } }
+    .barcode { background: #fbf9f6; color: var(--ink); padding: 14px 14px 12px; display: grid; grid-template-columns: auto auto; gap: 12px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); transition: filter 1.2s var(--ease), opacity 1.2s var(--ease); }
+    .barcode-wrap.locked { pointer-events: none; }
+    .barcode-wrap.locked .barcode { filter: blur(7px) grayscale(1); opacity: .55; }
+    .barcode .side { writing-mode: vertical-rl; transform: rotate(180deg); display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+    .qr { width: clamp(170px, 15vw, 210px); aspect-ratio: 1; max-width: 100%; border: 1px dashed rgba(40,37,31,.45); display: grid; place-items: center; text-align: center; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; line-height: 1.6; position: relative; }
+    .qr img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fbf9f6; }
+    .scratch { position: absolute; inset: -1px; width: calc(100% + 2px); height: calc(100% + 2px); touch-action: none; cursor: grab; transition: opacity .9s var(--ease); }
+    .scratch.cleared { opacity: 0; pointer-events: none; }
+    /* Share row (logic in assets/share.js) */
+    .share { margin-top: 34px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .share-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; opacity: .7; margin-right: 8px; }
+    .share button { appearance: none; width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(243,238,232,.4); background: transparent; color: var(--paper); display: grid; place-items: center; cursor: pointer; padding: 0; transition: background .3s, color .3s, border-color .3s, transform .3s var(--ease); }
+    .share button:hover, .share button:focus-visible { background: var(--paper); color: var(--ink); border-color: var(--paper); outline: none; }
+    .share button:active { transform: scale(.94); }
+    .share svg { width: 15px; height: 15px; fill: currentColor; }
+    .share [data-share="zalo"] svg { width: 22px; height: 22px; }
+    .share-toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 120; transform: translate(-50%, 20px); max-width: calc(100vw - 32px); background: var(--paper); color: var(--ink); padding: 12px 18px; border-radius: 999px; font: 500 11px/1.4 var(--sans); letter-spacing: .04em; text-align: center; opacity: 0; pointer-events: none; transition: opacity .3s, transform .4s var(--ease); }
+    .share-toast.on { opacity: 1; transform: translate(-50%, 0); }
+    .voucher-link { margin-top: 18px; color: var(--paper); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; padding: 12px 18px; border: 1px solid rgba(243,238,232,.5); border-radius: 999px; animation: rise-in .9s var(--ease) both; }
+    @keyframes rise-in { from { opacity: 0; transform: translateY(10px); } }
+    .qr { cursor: pointer; }
+    .barcode .price { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 16px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; border-top: 1px solid rgba(40,37,31,.2); padding-top: 9px; }
+
+    @media (max-width: 760px) {
+      .label, .line p { font-size: 8px; }
+      .masthead { font-size: 14.2vw; margin-top: 18px; }
+      .cover-lines { grid-template-columns: 1fr; gap: 22px; }
+      .cover-lines .right { align-items: flex-start; text-align: left; }
+      .line.big h3 { font-size: 40px; }
+      .badge { top: 22%; width: 86px; }
+      .badge b { font-size: 26px; }
+      .runner { grid-template-columns: 1fr auto; }
+      .runner-chapter { display: none; }
+      .runner-name { font-size: 16px; }
+      .contents { grid-template-columns: 1fr; padding: 10vh var(--gutter) 12vh; }
+      .toc a { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; padding: 18px 0; }
+      .scene { height: 320svh; }
+      .scene-meta { top: 56px; font-size: 8px; }
+      .folio, .microcopy { bottom: 18px; font-size: 8px; }
+      .p-title { font-size: 14vw; }
+      .p-dek, .g-note, .w-small { bottom: 56px; font-size: 8px; }
+      .half { width: 100%; height: 50%; }
+      .half.a { top: 0; bottom: auto; } .half.b { top: auto; bottom: 0; }
+      .half img { top: 0; left: -12%; width: 124%; height: 100%; }
+      .half.a figcaption { bottom: auto; top: 80px; }
+      .half.b figcaption { bottom: 50px; }
+      .seam { top: 50%; bottom: auto; left: 0; right: 0; width: auto; height: 1px; transform-origin: left; }
+      .t-mark { font-size: 17vw; }
+      .g-kicker { bottom: 110px; font-size: 30px; }
+      .g-note { left: var(--gutter); right: auto; text-align: left; }
+      .w-caption { bottom: 110px; font-size: 15vw; }
+      .w-small { left: var(--gutter); right: auto; text-align: left; }
+      .letter { grid-template-columns: 1fr; padding: 13vh var(--gutter) 13vh; gap: 40px; }
+      .letter-head { position: static; }
+      .letter-body { font-size: 20px; }
+      .staff { grid-template-columns: 1fr; padding: 10vh var(--gutter) 12vh; gap: 36px; }
+      .staff-row { grid-template-columns: 1fr; gap: 6px; }
+      .back-center { grid-template-columns: 1fr; align-items: start; gap: 44px; }
+      .back h2 { font-size: 18vw; }
+      .gift { align-self: center; }
+      .back-bottom { flex-direction: column; gap: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .grain { animation: none; }
+      .cover-media img, .masthead .ch, .rise, [data-reveal], .roller .reel { transition: none; }
+      .letter-body .w { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span></span></div>
+  <div class="toc-preview" aria-hidden="true"></div>
+
+  <!-- RUNNING HEADER -->
+  <div class="runner" data-runner aria-hidden="true">
+    <span class="runner-name">PHƯƠNG ANH<i>Nº22</i></span>
+    <span class="runner-chapter" data-runner-chapter>In this issue</span>
+    <span class="runner-page">p. <span data-runner-page></span></span>
+  </div>
+
+  <!-- PRELOADER / START GATE -->
+  <div class="loader">
+    <div class="loader-top label"><span>Phương Anh Magazine</span><span>Hà Nội</span></div>
+    <div class="loader-center">
+      <div class="loader-num" aria-hidden="true"><span data-count>00</span><sup>Nº</sup></div>
+      <div class="gate">
+        <p>A private edition for Phương Anh</p>
+        <div class="countdown" data-countdown hidden>
+          <span class="label">Opens in</span>
+          <div class="cd-row" role="timer" aria-live="off">
+            <div class="cd"><span data-cd="d"></span><small>Days</small></div><b>:</b>
+            <div class="cd"><span data-cd="h"></span><small>Hours</small></div><b>:</b>
+            <div class="cd"><span data-cd="m"></span><small>Minutes</small></div><b>:</b>
+            <div class="cd"><span data-cd="s"></span><small>Seconds</small></div>
+          </div>
+          <button class="sound-btn" type="button" data-sound aria-pressed="false"><i></i><span>Sound — off</span></button>
+        </div>
+        <button class="open-btn" type="button" data-open>Open<br>the issue</button>
+      </div>
+    </div>
+    <div>
+      <div class="loader-bar"><i></i></div>
+      <div class="loader-bottom label"><span data-loader-status>Printing the October issue</span><span>31.10.2026</span></div>
+    </div>
+  </div>
+
+  <!-- COVER -->
+  <header class="cover" data-chapter="Cover" data-page="1">
+    <div class="cover-media" data-cover-media>
+      <img class="bleed" data-cover-img src="assets/photos/cover.jpg" alt="Cover portrait">
+    </div>
+    <div class="cover-ui">
+      <div class="cover-top label rise d1"><span>Issue Nº22 — October 2026</span><span>31.10.2026<a class="dl" data-dl="cover" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
+      <h1 class="masthead" data-split data-masthead aria-label="Phương Anh">PHƯƠNG ANH</h1>
+      <div class="cover-lines rise d2">
+        <div class="left">
+          <div class="line big"><h3><em>The</em><br>Twenty-Two<br>Issue</h3><p>Born October 31, 2004</p></div>
+        </div>
+        <div class="right">
+          <div class="line"><h3>Far <em>/</em> Away</h3><p>From the Hà Giang loop to the pines of Đà Lạt</p></div>
+          <div class="line"><h3>Class of <em>2026</em></h3><p>The auditor graduates</p></div>
+          <div class="line"><h3>A New <em>Chapter</em></h3><p>Her first year at EY Vietnam</p></div>
+        </div>
+      </div>
+      <div class="badge rise d3" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <defs><path id="badge-circle" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"></path></defs>
+          <text><textPath href="#badge-circle">HAPPY BIRTHDAY · ISSUE Nº22 · 31.10 ·</textPath></text>
+        </svg>
+        <b>22</b>
+      </div>
+      <div class="cover-bottom label rise d3"><span>Hà Nội</span><span class="cue"><i></i> Open the issue <i></i></span><span>Special edition</span></div>
+    </div>
+  </header>
+
+  <!-- CONTENTS -->
+  <section class="contents" id="contents" data-chapter="In this issue" data-page="3">
+    <div>
+      <h2 data-reveal="wipe">In this<br>issue</h2>
+      <span class="label" data-reveal style="--d:2">Nº22 / Twenty-two pages of her</span>
+    </div>
+    <ol class="toc">
+      <li data-reveal style="--d:1"><a href="#portrait" data-cursor="Open" data-preview="assets/photos/portrait_sm.jpg"><span class="no">01</span><span class="t">The Portrait<small>Twenty-two years in the making</small></span><span class="pg">p. 12</span></a></li>
+      <li data-reveal style="--d:2"><a href="#travel" data-cursor="Open" data-preview="assets/photos/hagiang_sm.jpg"><span class="no">02</span><span class="t">Far / Away<small>A year measured in kilometres</small></span><span class="pg">p. 28</span></a></li>
+      <li data-reveal style="--d:3"><a href="#grad" data-cursor="Open" data-preview="assets/photos/graduation_sm.jpg"><span class="no">03</span><span class="t">Class of 2026<small>National Economics University</small></span><span class="pg">p. 46</span></a></li>
+      <li data-reveal style="--d:4"><a href="#work" data-cursor="Open" data-preview="assets/photos/new-chapter_sm.jpg"><span class="no">04</span><span class="t">A New Chapter<small>Inside her first year at EY Vietnam</small></span><span class="pg">p. 64</span></a></li>
+      <li data-reveal style="--d:5"><a href="#letter" data-cursor="Read" data-preview="assets/photos/cover_sm.jpg"><span class="no">—</span><span class="t">Letter from the Editor<small>Read this one slowly</small></span><span class="pg">p. 88</span></a></li>
+    </ol>
+  </section>
+
+  <main>
+    <!-- 01 PORTRAIT -->
+    <section class="scene s-portrait" data-scene="portrait" id="portrait" data-chapter="01 — The Portrait" data-page="12">
+      <div class="scene-pin">
+        <div class="layer breathe" data-motion="p-layer">
+          <img class="bleed" src="assets/photos/portrait.jpg" alt="Portrait">
+        </div>
+        <div class="shade" data-motion="p-shade"></div>
+        <div class="p-title serif" data-motion="p-title">TWENTY-TWO</div>
+        <div class="over p-dek" data-motion="p-dek">Born October 31, 2004.<br>Twenty-two years in the making.</div>
+        <div class="scene-meta"><span>The Portrait</span><span>01 — Cover story<a class="dl" data-dl="portrait" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
+        <div class="folio"><b>12</b><span>Phương Anh — Oct 2026</span></div>
+        <div class="microcopy">Slow image / close focus</div>
+      </div>
+    </section>
+
+    <!-- 02 FAR / AWAY -->
+    <section class="scene s-travel" data-scene="travel" id="travel" data-chapter="02 — Far / Away" data-page="28">
+      <div class="scene-pin">
+        <figure class="half a breathe">
+          <img data-motion="t-a" src="assets/photos/hagiang.jpg" alt="Hà Giang">
+          <figcaption>Hà Giang — the loop</figcaption>
+        </figure>
+        <figure class="half b breathe">
+          <img data-motion="t-b" src="assets/photos/dalat.jpg" alt="Đà Lạt">
+          <figcaption>Đà Lạt — 1,500 m above sea level</figcaption>
+        </figure>
+        <div class="seam" data-motion="t-seam"></div>
+        <div class="t-mark serif" data-motion="t-mark">FAR <em>/</em> AWAY</div>
+        <div class="scene-meta"><span>Far / Away</span><span>02 — Travel<a class="dl" data-dl="travel" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
+        <div class="folio"><b>28</b><span>Phương Anh — Oct 2026</span></div>
+        <div class="microcopy">Two frames / one road</div>
+      </div>
+    </section>
+
+    <!-- 03 CLASS OF 2026 -->
+    <section class="scene s-grad" data-scene="grad" id="grad" data-chapter="03 — Class of 2026" data-page="46">
+      <div class="scene-pin">
+        <div class="layer breathe" data-motion="g-layer">
+          <img class="bleed" src="assets/photos/graduation.jpg" alt="Graduation">
+        </div>
+        <div class="shade" data-motion="g-shade"></div>
+        <svg class="g-cut" data-motion="g-cut" aria-hidden="true">
+          <defs>
+            <mask id="cut2026" maskUnits="userSpaceOnUse">
+              <rect class="g-rect" fill="#fff"></rect>
+              <text class="g-text" fill="#000" text-anchor="middle" dominant-baseline="central">2026</text>
+            </mask>
+          </defs>
+          <rect class="g-rect" style="fill: var(--lilac)" mask="url(#cut2026)"></rect>
+        </svg>
+        <div class="over g-kicker serif" data-motion="g-kicker">Class of 2026.</div>
+        <div class="over g-note" data-motion="g-note">Bachelor of Auditing.<br>National Economics University, Hà Nội.</div>
+        <div class="scene-meta"><span>Class of 2026</span><span>03 — Graduation<a class="dl" data-dl="grad" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
+        <div class="folio"><b>46</b><span>Phương Anh — Oct 2026</span></div>
+        <div class="microcopy">Scale / cut / reveal</div>
+      </div>
+    </section>
+
+    <!-- 04 A NEW CHAPTER -->
+    <section class="scene s-work" data-scene="work" id="work" data-chapter="04 — A New Chapter" data-page="64">
+      <div class="scene-pin">
+        <div class="layer breathe">
+          <img class="w-cam" data-motion="w-cam" src="assets/photos/new-chapter.jpg" alt="Walking down a green road">
+        </div>
+        <div class="vignette" data-motion="w-vignette"></div>
+        <div class="shade" data-motion="w-shade"></div>
+        <div class="over w-caption serif" data-motion="w-caption">EY<em>Vietnam.</em></div>
+        <div class="over w-small" data-motion="w-small">New desk, new badge,<br>same nerve.</div>
+        <div class="scene-meta"><span>A New Chapter</span><span>04 — Work<a class="dl" data-dl="work" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
+        <div class="folio"><b>64</b><span>Phương Anh — Oct 2026</span></div>
+        <div class="microcopy">Down the road / close in</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LETTER FROM THE EDITOR -->
+  <section class="letter" id="letter" data-chapter="Letter from the Editor" data-page="88">
+    <div class="letter-head">
+      <h2 data-reveal="wipe">Letter from<br><em>the Editor</em></h2>
+      <span class="label" data-reveal style="--d:2">p. 88 — October 31, 2026</span>
+    </div>
+    <div class="letter-body" data-words>
+      <p>Dear Phương Anh, this issue was meant to be about fashion. It turned out to be about you, which, honestly, is the same thing.</p>
+      <p>Twenty-one was a big year. You walked out of NEU with a degree in auditing, walked straight into EY Vietnam, and still found time for mountain roads in Hà Giang and cold mornings in Đà Lạt. You make it look easy. It isn't. We noticed.</p>
+      <p>Twenty-two is yours. Spend it on good light, long roads, people who make you laugh, and spreadsheets that balance on the first try.</p>
+      <p>Happy birthday.</p>
+      <div class="letter-sign">With love, the Editor<span>Editor-in-chief, Phương Anh Magazine</span></div>
+    </div>
+    <div></div>
+  </section>
+
+  <!-- MASTHEAD -->
+  <section class="staff" id="masthead" data-chapter="Masthead" data-page="94">
+    <div class="staff-head">
+      <h2 data-reveal="wipe">Mast<em>head</em></h2>
+      <span class="label" data-reveal style="--d:2">p. 94 — The people behind this issue</span>
+    </div>
+    <dl class="staff-list">
+      <div class="staff-row" data-reveal style="--d:1"><dt>Editor-in-chief</dt><dd>The Editor</dd></div>
+      <div class="staff-row" data-reveal style="--d:2"><dt>Cover star</dt><dd>Nguyễn Phương Anh</dd></div>
+      <div class="staff-row" data-reveal style="--d:3"><dt>Photography</dt><dd>Her camera roll, <em>and every friend who held the phone</em></dd></div>
+      <div class="staff-row" data-reveal style="--d:4"><dt>Styling</dt><dd>Herself, <em>obviously</em></dd></div>
+      <div class="staff-row" data-reveal style="--d:5"><dt>Fact-checking</dt><dd>Audited and approved by the cover star</dd></div>
+      <div class="staff-row" data-reveal style="--d:6"><dt>Printed in</dt><dd>Hà Nội, October 31, 2026</dd></div>
+      <div class="staff-row" data-reveal style="--d:7"><dt>Circulation</dt><dd>One copy. <em>This one.</em></dd></div>
+    </dl>
+  </section>
+
+  <!-- BACK COVER -->
+  <footer class="back" data-back data-chapter="Back cover" data-page="96">
+    <div class="back-top label"><span>Back cover</span><span>Nº22</span></div>
+    <div class="back-center">
+      <div>
+        <h2 data-reveal="wipe" data-wish-title>Make a<br><em>wish.</em></h2>
+        <p class="dek" data-reveal style="--d:3" data-wish-dek>Every issue ships with a gift. Blow out the candle, then scratch the card to unwrap yours.</p>
+        <div class="share" data-reveal style="--d:4" data-share-group data-share-path="./"
+             data-share-image="assets/shots/cover-mobile.jpg"
+             data-share-title="Phương Anh — Issue Nº22"
+             data-share-text="A private edition, published once a year, every October 31.">
+          <span class="share-label">Share this issue</span>
+          <button data-share="facebook" data-cursor="Share"></button>
+          <button data-share="instagram" data-cursor="Share"></button>
+          <button data-share="zalo" data-cursor="Share"></button>
+        </div>
+      </div>
+      <div class="gift" data-reveal style="--d:5">
+        <button class="candle" type="button" data-candle data-cursor="Blow" aria-label="Blow out the candle">
+          <svg viewBox="0 0 46 150" aria-hidden="true">
+            <defs>
+              <pattern id="stripes" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+                <rect width="8" height="8" fill="#f3eee8"></rect><rect width="3.2" height="8" fill="#ead1c2"></rect>
+              </pattern>
+              <radialGradient id="glowGrad"><stop offset="0" stop-color="#f6c76b" stop-opacity=".55"></stop><stop offset="1" stop-color="#f6c76b" stop-opacity="0"></stop></radialGradient>
+            </defs>
+            <circle class="glow" cx="23" cy="26" r="24" fill="url(#glowGrad)"></circle>
+            <path class="smoke" d="M23 44 C 17 34, 29 28, 22 18 S 26 4, 21 -6" fill="none" stroke="#f3eee8" stroke-width="1.4" stroke-linecap="round"></path>
+            <g class="flame">
+              <path d="M23 8 C 30 20, 32 30, 23 42 C 14 30, 16 20, 23 8 Z" fill="#f2b45a"></path>
+              <path d="M23 22 C 27 29, 27 35, 23 41 C 19 35, 19 29, 23 22 Z" fill="#fff4dc"></path>
+            </g>
+            <line x1="23" y1="41" x2="23" y2="48" stroke="#28251f" stroke-width="1.6"></line>
+            <rect x="17" y="47" width="12" height="103" rx="1.5" fill="url(#stripes)"></rect>
+          </svg>
+        </button>
+        <div class="candle-hint" data-candle-hint>Tap the flame</div>
+        <div class="barcode-wrap locked" data-gift>
+          <div class="barcode">
+            <div class="side"><span>Phương Anh</span><span>Nº22</span></div>
+            <div class="qr" data-scratch-host>
+              QR code<br>goes here
+              <img src="assets/qr.png" alt="Gift QR code" onerror="this.remove()">
+              <canvas class="scratch" data-scratch aria-label="Scratch card: drag to reveal the gift"></canvas>
+            </div>
+            <div class="price"><span>Nº22 — 31.10</span><span>Scratch to unwrap</span></div>
+          </div>
+        </div>
+        <a class="voucher-link" href="voucher.html" data-voucher-link hidden>Open your voucher <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="back-bottom"><span>Phương Anh Magazine is published once a year, every October 31.</span><span>Happy 22nd birthday</span></div>
+    <canvas class="confetti" data-confetti aria-hidden="true"></canvas>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script>
+    (() => {
+      // Scene 04 camera: zoom at the end, and where she stands in the photo (fractions of width/height).
+      const CAM_ZOOM = 1.6;
+      const CAM_FOCUS = [0.565, 0.66];
+      const MIN_LOADER_MS = 1900;
+      const MAX_LOADER_MS = 5000;
+      // The issue unlocks at midnight on her birthday, Hà Nội time. Add ?lock=off (or ?preview) to the URL to bypass.
+      const OPENS_AT = new Date('2026-10-31T00:00:00+07:00').getTime();
+      const params = new URLSearchParams(location.search);
+      const PREVIEW = params.get('lock') === 'off' || params.has('preview');
+      const SHOT = params.get('shot');
+      const SCRATCH_CLEAR_RATIO = 0.8;
+      const CONFETTI_COLORS = ['#ead1c2', '#dce5ed', '#eee6bd', '#e4dfe8', '#f3eee8', '#f2b45a'];
+
+      const root = document.documentElement;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const scenes = [...document.querySelectorAll('[data-scene]')];
+      let ticking = false;
+
+      const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
+      const smooth = (v) => { const t = clamp(v); return t * t * (3 - 2 * t); };
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const span = (p, start, end) => smooth((p - start) / (end - start));
+      const isNarrow = () => window.innerWidth <= 760;
+
+      /* ---- Rolling digits ---- */
+      function createRoller(host, length) {
+        host.classList.add('roller');
+        const reel = '0123456789'.split('').map((d) => `<span>${d}</span>`).join('');
+        host.innerHTML = Array.from({ length }, () => `<span class="digit"><span class="reel">${reel}</span></span>`).join('');
+        const reels = [...host.querySelectorAll('.reel')];
+        return (value) => {
+          const s = String(value).padStart(length, '0').slice(-length);
+          reels.forEach((r, i) => { r.style.transform = `translateY(${-Number(s[i]) * 10}%)`; });
+          host.setAttribute('aria-label', s);
+        };
+      }
+
+      /* ---- Split masthead into letters ---- */
+      document.querySelectorAll('[data-split]').forEach((el) => {
+        el.innerHTML = [...el.textContent].map((c, i) => c === ' '
+          ? ' '
+          : `<span class="ch" aria-hidden="true" style="--i:${i}">${c}</span>`).join('');
+      });
+
+      /* ---- Split the letter into words for the read-along reveal ---- */
+      const words = [];
+      document.querySelectorAll('[data-words] p').forEach((p) => {
+        p.innerHTML = p.textContent.split(/(\s+)/).map((t) => /^\s+$/.test(t) ? t : `<span class="w">${t}</span>`).join('');
+        words.push(...p.querySelectorAll('.w'));
+      });
+
+      /* ---- Scene 04 camera: size the photo so it always covers the frame ---- */
+      const camImg = document.querySelector('[data-motion="w-cam"]');
+      function layoutCam() {
+        const ratio = camImg.naturalWidth ? camImg.naturalHeight / camImg.naturalWidth : 4 / 3;
+        camImg.style.width = `${Math.max(window.innerWidth, window.innerHeight / ratio)}px`;
+      }
+      camImg.addEventListener('load', () => { layoutCam(); requestRender(); });
+
+      /* ---- Dimming layer for the page-turn ---- */
+      scenes.forEach((s) => {
+        const dim = document.createElement('div');
+        dim.className = 'dim';
+        s.querySelector('.scene-pin').appendChild(dim);
+      });
+
+      /* ---- "2026" cut-out sized to the viewport ---- */
+      function layoutCut() {
+        const w = window.innerWidth, h = window.innerHeight;
+        document.querySelectorAll('.g-cut').forEach((svg) => {
+          svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+          svg.querySelectorAll('.g-rect').forEach((r) => { r.setAttribute('width', w); r.setAttribute('height', h); });
+          const text = svg.querySelector('.g-text');
+          text.setAttribute('x', w / 2);
+          text.setAttribute('y', h / 2);
+          text.setAttribute('font-size', Math.min(w * 0.38, h * 0.7));
+        });
+      }
+
+      /* ---- Smooth scroll + velocity "breathing" on images ---- */
+      let lenis = null;
+      const breathers = [...document.querySelectorAll('.breathe')];
+      let velocity = 0;
+      if (window.Lenis && !reduce && !SHOT) {
+        lenis = new window.Lenis({ lerp: 0.085, smoothWheel: true });
+        window.__lenis = lenis;
+        lenis.stop();
+        lenis.on('scroll', requestRender);
+        const raf = (t) => {
+          lenis.raf(t);
+          velocity = lerp(velocity, lenis.velocity || 0, .12);
+          if (Math.abs(velocity) < .01) velocity = 0;
+          const skew = clamp(velocity * -0.03, -1, 1);
+          const scale = 1 + Math.min(Math.abs(velocity) * 0.002, .05);
+          for (const el of breathers) el.style.transform = velocity ? `skewY(${skew}deg) scale(${scale})` : '';
+          requestAnimationFrame(raf);
+        };
+        requestAnimationFrame(raf);
+      }
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', (ev) => {
+          const target = document.querySelector(a.getAttribute('href'));
+          if (!target) return;
+          ev.preventDefault();
+          if (lenis) lenis.scrollTo(target, { duration: 1.8 });
+          else target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+        });
+      });
+
+      /* ---- Preloader, countdown lock, start button ---- */
+      const loader = document.querySelector('.loader');
+      const countEl = loader.querySelector('[data-count]');
+      const bar = loader.querySelector('.loader-bar i');
+      const status = loader.querySelector('[data-loader-status]');
+      const openBtn = loader.querySelector('[data-open]');
+      const start = performance.now();
+      let assetsReady = false;
+      const coverImg = document.querySelector('[data-cover-img]');
+      Promise.all([
+        coverImg.complete ? Promise.resolve() : new Promise((r) => { coverImg.onload = r; coverImg.onerror = r; }),
+        document.fonts ? document.fonts.ready : Promise.resolve(),
+      ]).then(() => { assetsReady = true; });
+
+      function tickLoader(now) {
+        const elapsed = now - start;
+        const timeP = clamp(elapsed / MIN_LOADER_MS);
+        const p = assetsReady || elapsed > MAX_LOADER_MS ? timeP : Math.min(timeP, .86);
+        countEl.textContent = String(Math.round(smooth(p) * 22)).padStart(2, '0');
+        bar.style.width = `${smooth(p) * 100}%`;
+        if (p >= 1) return armLoader();
+        requestAnimationFrame(tickLoader);
+      }
+
+      /* ---- Mechanical clock tick (Web Audio; browsers only allow sound after a tap) ---- */
+      let audioCtx = null, soundOn = false, tickTock = false;
+      function playTick() {
+        if (!soundOn || !audioCtx) return;
+        const t = audioCtx.currentTime;
+        tickTock = !tickTock;
+        // Two close transients per beat, like an escapement: a sharp click, then a softer one.
+        [[0, 1], [0.011, 0.45]].forEach(([offset, level]) => {
+          const at = t + offset;
+          const len = Math.floor(audioCtx.sampleRate * 0.03);
+          const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+          const ch = buf.getChannelData(0);
+          for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 6);
+          const src = audioCtx.createBufferSource();
+          src.buffer = buf;
+          const bp = audioCtx.createBiquadFilter();
+          bp.type = 'bandpass';
+          bp.frequency.value = tickTock ? 3400 : 2500;
+          bp.Q.value = 6;
+          const g = audioCtx.createGain();
+          g.gain.value = 0.55 * level;
+          src.connect(bp).connect(g).connect(audioCtx.destination);
+          src.start(at);
+          // a short metallic body under the click
+          const o = audioCtx.createOscillator();
+          o.type = 'triangle';
+          o.frequency.setValueAtTime(tickTock ? 1500 : 1100, at);
+          o.frequency.exponentialRampToValueAtTime(tickTock ? 900 : 650, at + 0.02);
+          const og = audioCtx.createGain();
+          og.gain.setValueAtTime(0.06 * level, at);
+          og.gain.exponentialRampToValueAtTime(0.0001, at + 0.03);
+          o.connect(og).connect(audioCtx.destination);
+          o.start(at);
+          o.stop(at + 0.035);
+        });
+      }
+      function setSound(on) {
+        const btn = loader.querySelector('[data-sound]');
+        if (on && !audioCtx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          audioCtx = new Ctx();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        soundOn = on;
+        btn.setAttribute('aria-pressed', String(on));
+        btn.querySelector('span').textContent = on ? 'Sound — on' : 'Sound — off';
+      }
+
+      function startCountdown() {
+        const box = loader.querySelector('[data-countdown]');
+        const soundBtn = box.querySelector('[data-sound]');
+        soundBtn.addEventListener('click', (e) => { e.stopPropagation(); setSound(!soundOn); });
+        // The first tap anywhere on the waiting screen also starts the ticking.
+        loader.addEventListener('pointerdown', (e) => {
+          if (!audioCtx && !soundBtn.contains(e.target)) setSound(true);
+        }, { once: true });
+        const set = {};
+        box.querySelectorAll('[data-cd]').forEach((el) => { set[el.dataset.cd] = createRoller(el, 2); });
+        box.hidden = false;
+        openBtn.disabled = true;
+        openBtn.innerHTML = 'Opens<br>31.10';
+        status.textContent = 'Opens October 31, 00:00 — Hà Nội';
+        const tick = () => {
+          const left = OPENS_AT - Date.now();
+          if (left <= 0) {
+            clearInterval(timer);
+            soundOn = false;
+            box.hidden = true;
+            openBtn.disabled = false;
+            openBtn.innerHTML = 'Open<br>the issue';
+            status.textContent = 'Your issue is ready';
+            openBtn.focus({ preventScroll: true });
+            return;
+          }
+          const s = Math.floor(left / 1000);
+          set.d(Math.min(99, Math.floor(s / 86400)));
+          set.h(Math.floor(s / 3600) % 24);
+          set.m(Math.floor(s / 60) % 60);
+          set.s(s % 60);
+          playTick();
+        };
+        const timer = setInterval(tick, 1000);
+        tick();
+      }
+
+      // Wait for the reader to open the issue; the click is also the gesture browsers require before any audio can play.
+      function armLoader() {
+        countEl.textContent = '22';
+        loader.classList.add('armed');
+        if (!PREVIEW && Date.now() < OPENS_AT) startCountdown();
+        else {
+          status.textContent = 'Your issue is ready';
+          setTimeout(() => openBtn.focus({ preventScroll: true }), 900);
+        }
+        openBtn.addEventListener('click', () => {
+          if (openBtn.disabled) return;
+          document.querySelector('audio[data-music]')?.play().catch(() => {});
+          finishLoading();
+        }, { once: true });
+      }
+      function finishLoading() {
+        loader.classList.add('done');
+        root.classList.remove('loading');
+        root.classList.add('ready');
+        if (lenis) lenis.start();
+        setTimeout(() => loader.remove(), 1300);
+      }
+      if (SHOT) { root.classList.add('shot'); finishLoading(); }
+      else if (reduce) armLoader();
+      else requestAnimationFrame(tickLoader);
+
+      /* ---- Save-this-page links: pre-rendered images, phone or desktop format ---- */
+      function updateDownloads() {
+        const format = isNarrow() ? 'mobile' : 'desktop';
+        document.querySelectorAll('[data-dl]').forEach((a) => {
+          a.href = `assets/shots/${a.dataset.dl}-${format}.jpg`;
+          a.download = `phuong-anh-n22-${a.dataset.dl}.jpg`;
+        });
+      }
+      updateDownloads();
+
+      /* ---- Running header ---- */
+      const runner = document.querySelector('[data-runner]');
+      const runnerChapter = runner.querySelector('[data-runner-chapter]');
+      const setRunnerPage = createRoller(runner.querySelector('[data-runner-page]'), 2);
+      const chapters = [...document.querySelectorAll('[data-chapter]')];
+      let currentChapter = null;
+      function updateRunner() {
+        const vh = window.innerHeight;
+        let active = chapters[0];
+        for (const c of chapters) if (c.getBoundingClientRect().top <= vh * .5) active = c;
+        // Hidden on the cover and the back cover, which carry their own labels.
+        runner.classList.toggle('on', window.scrollY > vh * .75 && !('back' in active.dataset));
+        if (active === currentChapter) return;
+        currentChapter = active;
+        setRunnerPage(active.dataset.page);
+        const name = active.dataset.chapter;
+        if (reduce || !runnerChapter.animate) { runnerChapter.textContent = name; return; }
+        runnerChapter.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-70%)' }], { duration: 220, easing: 'ease-in' })
+          .onfinish = () => {
+            runnerChapter.textContent = name;
+            runnerChapter.animate([{ opacity: 0, transform: 'translateY(70%)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.22,.75,.25,1)' });
+          };
+      }
+
+      /* ---- Reveal on enter ---- */
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { rootMargin: '0px 0px -12% 0px' });
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+
+      /* ---- Cursor + TOC preview (desktop) ---- */
+      const cursor = document.querySelector('.cursor');
+      const cursorLabel = cursor.querySelector('span');
+      if (finePointer) {
+        const preview = document.querySelector('.toc-preview');
+        const mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+        const cur = { ...mouse }, prev = { ...mouse };
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        document.querySelectorAll('[data-cursor], [data-scratch-host]').forEach((el) => {
+          el.addEventListener('mouseenter', () => {
+            if (!el.dataset.cursor) return;
+            cursorLabel.textContent = el.dataset.cursor;
+            cursor.classList.add('big');
+          });
+          el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+        });
+        const previewImgs = [];
+        document.querySelectorAll('[data-preview]').forEach((a) => {
+          const img = new Image();
+          img.src = a.dataset.preview;
+          img.alt = '';
+          preview.appendChild(img);
+          previewImgs.push(img);
+          a.addEventListener('mouseenter', () => {
+            previewImgs.forEach((im) => im.classList.remove('on'));
+            img.classList.add('on');
+            preview.classList.add('on');
+          });
+          a.addEventListener('mouseleave', () => preview.classList.remove('on'));
+        });
+        const loop = () => {
+          cur.x = lerp(cur.x, mouse.x, .22); cur.y = lerp(cur.y, mouse.y, .22);
+          prev.x = lerp(prev.x, mouse.x, .09); prev.y = lerp(prev.y, mouse.y, .09);
+          cursor.style.transform = `translate(${cur.x}px, ${cur.y}px)`;
+          const skew = clamp((mouse.x - prev.x) * .05, -8, 8);
+          preview.style.transform = `translate(${prev.x + 140}px, ${prev.y}px) rotate(${skew}deg)`;
+          requestAnimationFrame(loop);
+        };
+        requestAnimationFrame(loop);
+      }
+
+      /* ---- Confetti ---- */
+      const confettiCanvas = document.querySelector('[data-confetti]');
+      function burstConfetti(originX, originY, count, power) {
+        if (reduce) return;
+        const ctx = confettiCanvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = confettiCanvas.clientWidth, h = confettiCanvas.clientHeight;
+        confettiCanvas.width = w * dpr; confettiCanvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const pieces = Array.from({ length: count }, () => {
+          const angle = -Math.PI / 2 + (Math.random() - .5) * 2.2;
+          const speed = (7 + Math.random() * 13) * power;
+          return {
+            x: originX, y: originY,
+            vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+            w: 6 + Math.random() * 7, h: 9 + Math.random() * 12,
+            rot: Math.random() * Math.PI, vr: (Math.random() - .5) * .3,
+            phase: Math.random() * Math.PI * 2, vp: .08 + Math.random() * .12,
+            color: CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0],
+          };
+        });
+        const step = () => {
+          ctx.clearRect(0, 0, w, h);
+          let alive = 0;
+          for (const c of pieces) {
+            c.vy += .28; c.vx *= .985; c.vy *= .985;
+            c.vx += Math.sin(c.phase) * .12;
+            c.x += c.vx; c.y += c.vy; c.rot += c.vr; c.phase += c.vp;
+            if (c.y < h + 30) alive++;
+            ctx.save();
+            ctx.translate(c.x, c.y);
+            ctx.rotate(c.rot);
+            ctx.scale(1, Math.cos(c.phase));
+            ctx.fillStyle = c.color;
+            ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+            ctx.restore();
+          }
+          if (alive) requestAnimationFrame(step); else ctx.clearRect(0, 0, w, h);
+        };
+        requestAnimationFrame(step);
+      }
+      function burstFrom(el, count, power) {
+        const back = confettiCanvas.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
+        burstConfetti(r.left + r.width / 2 - back.left, r.top + r.height / 3 - back.top, count, power);
+      }
+
+      /* ---- Scratch card ---- */
+      const scratch = document.querySelector('[data-scratch]');
+      const scratchHost = document.querySelector('[data-scratch-host]');
+      const sctx = scratch.getContext('2d', { willReadFrequently: true });
+      let scratchActive = false, scratching = false, scratchDone = false, lastPt = null, strokes = 0;
+
+      function drawFoil() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = scratch.clientWidth, h = scratch.clientHeight;
+        scratch.width = w * dpr; scratch.height = h * dpr;
+        sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const g = sctx.createLinearGradient(0, 0, w, h);
+        g.addColorStop(0, '#a9a49c'); g.addColorStop(.45, '#e4e0d9'); g.addColorStop(.55, '#d6d1c9'); g.addColorStop(1, '#9d978e');
+        sctx.globalCompositeOperation = 'source-over';
+        sctx.fillStyle = g;
+        sctx.fillRect(0, 0, w, h);
+        sctx.fillStyle = 'rgba(40,37,31,.16)';
+        sctx.font = '500 8px "Be Vietnam Pro", Arial, sans-serif';
+        for (let y = 12; y < h; y += 16) {
+          for (let x = (y / 16) % 2 ? -20 : 0; x < w; x += 64) sctx.fillText('Nº22 ·', x, y);
+        }
+        sctx.fillStyle = '#28251f';
+        sctx.textAlign = 'center';
+        sctx.font = 'italic 19px "Playfair Display", Georgia, serif';
+        sctx.fillText('Scratch here', w / 2, h / 2 + 2);
+        sctx.font = '500 7px "Be Vietnam Pro", Arial, sans-serif';
+        sctx.fillText('GIFT UNDERNEATH', w / 2, h / 2 + 20);
+      }
+      function scratchAt(x, y) {
+        sctx.globalCompositeOperation = 'destination-out';
+        sctx.lineCap = 'round'; sctx.lineJoin = 'round';
+        sctx.lineWidth = 34;
+        sctx.beginPath();
+        sctx.moveTo(lastPt ? lastPt.x : x, lastPt ? lastPt.y : y);
+        sctx.lineTo(x, y);
+        sctx.stroke();
+        lastPt = { x, y };
+        if (++strokes % 6 === 0) checkCleared();
+      }
+      function checkCleared() {
+        if (!scratchActive || strokes < 3) return;
+        const { data } = sctx.getImageData(0, 0, scratch.width, scratch.height);
+        let clear = 0, total = 0;
+        for (let i = 3; i < data.length; i += 4 * 16) { total++; if (data[i] === 0) clear++; }
+        if (clear / total >= SCRATCH_CLEAR_RATIO) revealGift();
+      }
+      function revealGift() {
+        if (scratchDone) return;
+        scratchDone = true;
+        scratch.classList.add('cleared');
+        // She is probably reading on the phone she would scan with, so the code is also a link.
+        // Ignore the click that ends the final scratch stroke; only a deliberate tap opens it.
+        const revealedAt = performance.now();
+        scratchHost.dataset.cursor = 'Open';
+        scratchHost.addEventListener('click', () => {
+          if (performance.now() - revealedAt > 900) location.href = 'voucher.html';
+        });
+        document.querySelector('[data-voucher-link]').hidden = false;
+        burstFrom(scratchHost, 90, .75);
+        document.querySelector('[data-wish-dek]').textContent = 'Scan it, or tap it. Your voucher is waiting. Happy 22nd.';
+      }
+      const pointFrom = (e) => {
+        const r = scratch.getBoundingClientRect();
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+      };
+      scratch.addEventListener('pointerdown', (e) => {
+        if (!scratchActive || scratchDone) return;
+        scratching = true; lastPt = null;
+        scratch.setPointerCapture(e.pointerId);
+        const p = pointFrom(e); scratchAt(p.x, p.y);
+      });
+      scratch.addEventListener('pointermove', (e) => {
+        if (!scratching) return;
+        const p = pointFrom(e); scratchAt(p.x, p.y);
+      });
+      const endScratch = () => { if (scratching) { scratching = false; lastPt = null; checkCleared(); } };
+      scratch.addEventListener('pointerup', endScratch);
+      scratch.addEventListener('pointercancel', endScratch);
+      // Keyboard fallback: Enter/Space on the card reveals it outright.
+      scratch.tabIndex = -1;
+      scratch.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealGift(); } });
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(drawFoil);
+      window.addEventListener('resize', () => { if (!scratchDone && !strokes) drawFoil(); });
+
+      /* ---- Make a wish ---- */
+      const candle = document.querySelector('[data-candle]');
+      candle.addEventListener('click', () => {
+        if (candle.classList.contains('out')) return;
+        candle.classList.add('out');
+        candle.setAttribute('aria-label', 'Candle blown out');
+        delete candle.dataset.cursor;
+        cursor.classList.remove('big');
+        setTimeout(() => {
+          burstFrom(candle, 170, 1);
+          document.querySelector('[data-gift]').classList.remove('locked');
+          document.querySelector('[data-candle-hint]').textContent = 'Now scratch the card';
+          scratchActive = true;
+          scratch.tabIndex = 0;
+          scratchHost.dataset.cursor = 'Scratch';
+          document.querySelector('[data-wish-title]').innerHTML = 'Happy<br><em>birthday.</em>';
+          document.querySelector('[data-wish-dek]').textContent = 'Wish made. Your gift is printed where the barcode usually goes. Scratch to unwrap it.';
+        }, reduce ? 0 : 420);
+      });
+
+      /* ---- Scroll-driven scenes ---- */
+      // p: the scene's own animation (runs while it is pinned and uncovered).
+      // q: the next chapter sliding over it (0 → 1 across the final screen).
+      function sceneProgress(section) {
+        const vh = window.innerHeight;
+        const scrolled = -section.getBoundingClientRect().top;
+        const travel = Math.max(1, section.offsetHeight - 2 * vh);
+        return { p: clamp(scrolled / travel), q: clamp((scrolled - travel) / vh) };
+      }
+      function set(el, transform, opacity) {
+        if (!el) return;
+        if (transform !== null) el.style.transform = transform;
+        if (opacity !== undefined) el.style.opacity = opacity;
+      }
+
+      function updateScene(section, { p, q }) {
+        const get = (name) => section.querySelector(`[data-motion="${name}"]`);
+        if (reduce) p = 1;
+        const pin = section.querySelector('.scene-pin');
+        pin.style.transform = q > 0 && !reduce ? `scale(${1 - q * .06})` : '';
+        pin.querySelector('.dim').style.opacity = q * .6;
+
+        switch (section.dataset.scene) {
+          case 'portrait': {
+            const e = span(p, 0, .7);
+            const iy = lerp(isNarrow() ? 24 : 20, 0, e);
+            const ix = lerp(isNarrow() ? 16 : 35, 0, e);
+            const layer = get('p-layer');
+            layer.style.clipPath = `inset(${iy}% ${ix}% ${iy}% ${ix}%)`;
+            // On landscape screens the portrait photo has no horizontal slack, so settle on a
+            // slight zoom and nudge to bring her (at ~46% across the photo) to the centre.
+            const wide = window.innerWidth > window.innerHeight;
+            set(layer.querySelector('img'), `translateX(${wide ? lerp(0, 3, e) : 0}%) scale(${lerp(1.3, wide ? 1.12 : 1, e)})`);
+            set(get('p-title'), `translateY(-50%) scale(${lerp(1, 1.12, span(p, 0, 1))})`);
+            set(get('p-shade'), null, span(p, .6, .85));
+            set(get('p-dek'), `translateY(${lerp(16, 0, span(p, .65, .9))}px)`, span(p, .65, .9));
+            break;
+          }
+          case 'travel': {
+            const e = span(p, 0, 1);
+            const axis = isNarrow() ? 'X' : 'Y';
+            set(get('t-a'), `translate${axis}(${lerp(9, -9, e)}%)`);
+            set(get('t-b'), `translate${axis}(${lerp(-9, 9, e)}%)`);
+            set(get('t-seam'), `scale${axis === 'X' ? 'X' : 'Y'}(${span(p, 0, .4)})`);
+            set(get('t-mark'), `translate(-50%, -50%) scale(${lerp(.85, 1.05, e)})`, span(p, 0, .3));
+            break;
+          }
+          case 'grad': {
+            const e = span(p, .08, .75);
+            const cut = get('g-cut');
+            cut.style.transformOrigin = '50% 50%';
+            set(cut, `scale(${lerp(1, 14, e * e)})`, 1 - span(p, .55, .75));
+            // She stands on the right of this portrait photo; on landscape screens zoom a little and
+            // pull her toward the middle while keeping the NEU letters in frame.
+            const gWide = window.innerWidth > window.innerHeight;
+            set(get('g-layer').querySelector('img'), `translateX(${gWide ? lerp(0, -10, e) : 0}%) scale(${lerp(1.25, gWide ? 1.2 : 1, e)})`);
+            set(get('g-shade'), null, span(p, .7, .9));
+            set(get('g-kicker'), `translateY(${lerp(16, 0, span(p, .72, .92))}px)`, span(p, .72, .92));
+            set(get('g-note'), `translateY(${lerp(16, 0, span(p, .78, .96))}px)`, span(p, .78, .96));
+            break;
+          }
+          case 'work': {
+            // Start wide on the road, then push in until she stands centre frame.
+            const e = span(p, 0, .85);
+            const img = get('w-cam');
+            const W = window.innerWidth, H = window.innerHeight;
+            const w = img.offsetWidth, h = img.offsetHeight;
+            const s = lerp(1, CAM_ZOOM, e);
+            const fx = CAM_FOCUS[0] * w, fy = CAM_FOCUS[1] * h;
+            const targetX = lerp(fx + (W - w) / 2, W * .55, e);
+            const targetY = lerp(H * .72, H * .5, e);
+            const tx = clamp(targetX - fx * s, W - w * s, 0);
+            const ty = clamp(targetY - fy * s, H - h * s, 0);
+            img.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+            set(get('w-vignette'), null, span(p, .15, .85) * .9);
+            set(get('w-shade'), null, span(p, .6, .85));
+            set(get('w-caption'), `translateY(${lerp(20, 0, span(p, .65, .9))}px)`, span(p, .65, .9));
+            set(get('w-small'), `translateY(${lerp(16, 0, span(p, .72, .95))}px)`, span(p, .72, .95));
+            break;
+          }
+        }
+      }
+
+      const coverMedia = document.querySelector('[data-cover-media]');
+      const masthead = document.querySelector('[data-masthead]');
+      function updateCover() {
+        const p = clamp(window.scrollY / window.innerHeight);
+        coverMedia.style.transform = `translateY(${p * 22}%) scale(${1 + p * .08})`;
+        // The masthead shrinks and lifts away as the running header takes over.
+        masthead.style.transform = `translateY(${p * -30}%) scale(${1 - p * .45})`;
+        masthead.style.opacity = 1 - span(p, .35, .8);
+      }
+
+      function updateWords() {
+        if (reduce || !words.length) return;
+        const vh = window.innerHeight;
+        for (const w of words) {
+          const top = w.getBoundingClientRect().top;
+          w.style.opacity = lerp(.14, 1, clamp((vh * .82 - top) / (vh * .22)));
+        }
+      }
+
+      // In shot mode only the requested page stays, pinned in its finished state.
+      const shotTarget = SHOT && (SHOT === 'cover' ? document.querySelector('.cover') : document.getElementById(SHOT));
+      if (shotTarget) {
+        document.querySelectorAll('.cover, .contents, main > .scene, .letter, .staff, .back').forEach((el) => {
+          if (el !== shotTarget) el.style.display = 'none';
+        });
+        Object.assign(shotTarget.style, { height: '100vh', marginTop: '0' });
+      }
+
+      function render() {
+        if (shotTarget) {
+          if (shotTarget.dataset.scene) updateScene(shotTarget, { p: 1, q: 0 });
+          ticking = false;
+          return;
+        }
+        updateCover();
+        scenes.forEach((s) => updateScene(s, sceneProgress(s)));
+        updateWords();
+        updateRunner();
+        ticking = false;
+      }
+      function requestRender() {
+        if (!ticking) { requestAnimationFrame(render); ticking = true; }
+      }
+
+      layoutCut();
+      layoutCam();
+      window.addEventListener('scroll', requestRender, { passive: true });
+      window.addEventListener('resize', () => { layoutCut(); layoutCam(); updateDownloads(); requestRender(); });
+      window.addEventListener('load', requestRender);
+      document.fonts?.ready.then(requestRender);
+      render();
+    })();
+  </script>
+  <script src="assets/share.js"></script>
+</body>
+</html>
