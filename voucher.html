@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
   <meta name="theme-color" content="#28251f">
   <meta name="robots" content="noindex, nofollow">
   <title>Gift Voucher — Phương Anh Nº22</title>
@@ -40,6 +41,10 @@
     }
     [hidden] { display: none !important; }
     button { font: inherit; }
+    /* iOS Safari turns dates/amounts into blue links — keep ticket ink. */
+    a[x-apple-data-detectors], a[href^="tel:"], a[href^="mailto:"] {
+      color: inherit !important; text-decoration: none !important; font: inherit !important;
+    }
 
     /* ---------- Ticket (front and back share the shape) ---------- */
     .ticket { width: 100%; aspect-ratio: 4 / 5; container-type: inline-size; display: grid; grid-template-rows: 1fr auto; }
@@ -69,21 +74,21 @@
       opacity: var(--go, 0);
     }
 
-    .top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.3cqw; letter-spacing: .2em; text-transform: uppercase; }
+    .top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.3cqw; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); }
     .top b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 3.6cqw; letter-spacing: 0; text-transform: none; }
-    .kind { font-size: 2.3cqw; letter-spacing: .32em; text-transform: uppercase; border-top: 1px solid var(--ink); padding-top: 3cqw; }
+    .kind { font-size: 2.3cqw; letter-spacing: .32em; text-transform: uppercase; border-top: 1px solid var(--ink); padding-top: 3cqw; color: var(--ink); }
     .amount { align-self: center; display: grid; gap: 1cqw; }
-    .amount .num { font-family: var(--serif); font-weight: 400; font-size: 19cqw; line-height: .9; letter-spacing: -.045em; font-variant-numeric: lining-nums; white-space: nowrap; }
+    .amount .num { font-family: var(--serif); font-weight: 400; font-size: 19cqw; line-height: .9; letter-spacing: -.045em; font-variant-numeric: lining-nums; white-space: nowrap; color: var(--ink); }
     .amount .num sup { font-size: .32em; font-style: italic; letter-spacing: 0; vertical-align: top; margin-left: .08em; position: relative; top: .25em; }
     .amount .num.sealed { font-style: italic; font-size: 21cqw; }
     .amount .words { font-family: var(--serif); font-style: italic; font-size: 5cqw; letter-spacing: -.01em; color: var(--muted); }
     .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 2cqw 4cqw; border-top: 1px solid var(--rule); padding-top: 3cqw; }
     .meta div { display: grid; gap: .8cqw; }
     .meta small { font-size: 1.9cqw; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-    .meta span { font-family: var(--serif); font-size: 3.8cqw; letter-spacing: -.01em; }
+    .meta span { font-family: var(--serif); font-size: 3.8cqw; letter-spacing: -.01em; color: var(--ink); }
     .meta div:nth-child(2) { text-align: right; }
     .stub-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 4cqw; }
-    .claim { font-family: var(--serif); font-style: italic; font-size: 6.6cqw; line-height: 1.05; letter-spacing: -.02em; }
+    .claim { font-family: var(--serif); font-style: italic; font-size: 6.6cqw; line-height: 1.05; letter-spacing: -.02em; color: var(--ink); }
     .claim small { display: block; margin-top: 1.6cqw; font-family: var(--sans); font-style: normal; font-size: 2cqw; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
     .code { text-align: right; font-size: 1.9cqw; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
     .code b { display: block; margin-top: 1cqw; font-family: var(--serif); font-weight: 400; font-size: 4cqw; letter-spacing: .04em; color: var(--ink); }
@@ -427,9 +432,11 @@
         cards.forEach((c) => c.classList.remove('lifted'));
         if (wasSpread) window.Sound?.play('gather', { volume: .8 });
         stack({ duration: 500, delay: 0 });
-        await wait(wasSpread ? 560 : 120);
-        window.Sound?.play('shuffle', { volume: .9 });
+        // gather's useful audio is ~0.7s — wait it out so shuffle doesn't overlap
+        await wait(wasSpread ? 740 : 120);
+        // shuffle.mp3 only has ~0.75s of content: one play per riffle, not one for all three
         for (let k = 0; k < SHUFFLES; k++) {
+          window.Sound?.play('shuffle', { volume: .85, rate: .94 + Math.random() * .1 });
           split();
           await wait(300);
           reshuffle();
@@ -437,8 +444,8 @@
           await wait(320);
         }
         fan();
-        // one soft card-slide per card, following the fan's stagger
-        cards.forEach((c, i) => window.Sound?.play('deal', { volume: .22, rate: .9 + Math.random() * .25, delay: i * .04 + .05 }));
+        // short deal click per card, timed to the fan's i×40ms stagger
+        cards.forEach((c, i) => window.Sound?.play('deal', { volume: .32, rate: .92 + Math.random() * .2, delay: i * .04 }));
         await wait(700 + cards.length * 40);
         makeSnappy();
         table.classList.remove('busy');
