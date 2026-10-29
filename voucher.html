@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#28251f">
   <meta name="robots" content="noindex, nofollow">
   <title>Gift Voucher — Phương Anh Nº22</title>
-  <meta name="description" content="Six sealed birthday vouchers. Pick one, flip it, vui lòng IB để nhận quà.">
+  <meta name="description" content="Sealed birthday vouchers. Pick one, flip it, vui lòng IB để nhận quà.">
   <!-- Link preview. tools/render-assets.sh rewrites og:url and og:image to absolute URLs. -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://hieudeptrai196.github.io/phuong_anh/voucher.html">
   <meta property="og:title" content="Gift Voucher — Phương Anh Nº22">
-  <meta property="og:description" content="Six sealed birthday vouchers. Pick one, flip it, vui lòng IB để nhận quà.">
+  <meta property="og:description" content="Sealed birthday vouchers. Pick one, flip it, vui lòng IB để nhận quà.">
   <meta property="og:image" content="https://hieudeptrai196.github.io/phuong_anh/assets/og-voucher.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -93,16 +93,20 @@
     .deck-head { text-align: center; display: grid; gap: 10px; }
     .deck-head h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(34px, 5vw, 56px); letter-spacing: -.02em; line-height: 1; }
     .deck-head p { margin: 0; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; opacity: .7; }
+    /* Two endless belts gliding in opposite directions; each track holds the same run twice
+       and shifts by exactly half its length, so the loop never shows a seam. */
+    .belts { display: grid; }
     .belt {
-      width: 100vw; overflow: hidden; padding: 26px 0 34px;
-      -webkit-mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-              mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+      width: 100vw; overflow: hidden; padding: 16px 0 22px;
+      -webkit-mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+              mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
     }
-    .track { display: flex; gap: 22px; width: max-content; animation: glide 42s linear infinite; }
+    .track { display: flex; width: max-content; animation: glide 60s linear infinite; }
+    .track.reverse { animation-direction: reverse; animation-duration: 72s; }
     .belt:hover .track, .belt:focus-within .track { animation-play-state: paused; }
     @keyframes glide { from { transform: translateX(-50%); } to { transform: translateX(0); } }
     .mini {
-      appearance: none; border: 0; background: none; padding: 0; cursor: pointer; width: clamp(150px, 15vw, 200px);
+      appearance: none; border: 0; background: none; padding: 0; margin-right: 14px; cursor: pointer; width: clamp(128px, 12.5vw, 176px);
       transform: rotate(var(--tilt, 0deg)); transition: transform .5s var(--ease), filter .5s var(--ease);
       filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .4));
     }
@@ -196,9 +200,12 @@
   <section class="deck" data-deck>
     <div class="deck-head">
       <h1>Pick a voucher.</h1>
-      <p>Six sealed gifts · one is yours</p>
+      <p>Sealed gifts · one is yours</p>
     </div>
-    <div class="belt"><div class="track" data-track></div></div>
+    <div class="belts">
+      <div class="belt"><div class="track" data-track></div></div>
+      <div class="belt"><div class="track reverse" data-track></div></div>
+    </div>
     <button class="btn solid" type="button" data-draw>Draw for me</button>
     <a class="back-link" href="index.html">Back to the issue</a>
   </section>
@@ -249,7 +256,7 @@
 
   <script>
     (() => {
-      // The six denominations, drawn with equal odds.
+      // The denominations, drawn with equal odds.
       const VOUCHERS = [
         { value: 1000, words: 'một nghìn đồng', code: 'PA-22-001K' },
         { value: 2000, words: 'hai nghìn đồng', code: 'PA-22-002K' },
@@ -271,7 +278,6 @@
       const frontHTML = document.getElementById('front-tpl').innerHTML;
 
       const deck = document.querySelector('[data-deck]');
-      const track = document.querySelector('[data-track]');
       const reveal = document.querySelector('[data-reveal]');
       const stage = document.querySelector('[data-stage]');
       const card = stage.querySelector('[data-card]');
@@ -306,23 +312,26 @@
         return;
       }
 
-      /* ---- Deck ---- */
-      const TILTS = [-4, 3, -2, 4, -3, 2];
+      /* ---- Deck: two belts of sealed cards, each run long enough to overfill the widest screen ---- */
+      const CARDS_PER_RUN = 14;
+      const TILTS = [-4, 3, -2, 4, -3, 2, -1];
       const minis = [];
-      for (let copy = 0; copy < 2; copy++) {
-        TILTS.forEach((tilt, i) => {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'mini';
-          b.style.setProperty('--tilt', `${tilt}deg`);
-          b.setAttribute('aria-label', `Pick sealed voucher ${i + 1}`);
-          if (copy) { b.tabIndex = -1; b.setAttribute('aria-hidden', 'true'); }
-          b.innerHTML = `<div class="ticket">${frontHTML}</div>`;
-          b.addEventListener('click', () => pick(b));
-          track.appendChild(b);
-          minis.push(b);
-        });
-      }
+      document.querySelectorAll('[data-track]').forEach((track, row) => {
+        for (let copy = 0; copy < 2; copy++) {
+          for (let i = 0; i < CARDS_PER_RUN; i++) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'mini';
+            b.style.setProperty('--tilt', `${TILTS[(i + row * 3) % TILTS.length]}deg`);
+            b.setAttribute('aria-label', 'Pick this sealed voucher');
+            if (copy) { b.tabIndex = -1; b.setAttribute('aria-hidden', 'true'); }
+            b.innerHTML = `<div class="ticket">${frontHTML}</div>`;
+            b.addEventListener('click', () => pick(b));
+            track.appendChild(b);
+            minis.push(b);
+          }
+        }
+      });
       document.querySelector('[data-draw]').addEventListener('click', () => {
         // pick whichever sealed card is closest to the middle of the screen
         const mid = window.innerWidth / 2;
