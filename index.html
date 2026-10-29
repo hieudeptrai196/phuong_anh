@@ -331,6 +331,17 @@
     .qr img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fbf9f6; }
     .scratch { position: absolute; inset: -1px; width: calc(100% + 2px); height: calc(100% + 2px); touch-action: none; cursor: grab; transition: opacity .9s var(--ease); }
     .scratch.cleared { opacity: 0; pointer-events: none; }
+    .gift-link {
+      appearance: none; display: inline-flex; align-items: center; justify-content: center;
+      margin-top: 18px; padding: 12px 20px; text-decoration: none; color: var(--paper);
+      font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+      border: 1px solid rgba(243,238,232,.45); border-radius: 999px;
+      opacity: 0; transform: translateY(10px); pointer-events: none;
+      transition: opacity .6s var(--ease), transform .6s var(--ease), background .3s, color .3s, border-color .3s;
+    }
+    .gift-link.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .gift-link:hover, .gift-link:focus-visible { background: var(--paper); color: var(--ink); border-color: var(--paper); outline: none; }
+    .gift-link:active { transform: scale(.97); }
     /* Share row (logic in assets/share.js) */
     .share { margin-top: 34px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .share-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; opacity: .7; margin-right: 8px; }
@@ -627,7 +638,9 @@
             </div>
             <div class="price"><span>Nº22 — 31.10</span><span>Scratch to unwrap</span></div>
           </div>
-        </div>      </div>
+        </div>
+        <a class="gift-link" href="voucher.html" data-gift-link hidden>Open voucher</a>
+      </div>
     </div>
     <div class="back-bottom"><span>Phương Anh Magazine is published once a year, every October 31.</span><span>Happy 22nd birthday</span></div>
     <canvas class="confetti" data-confetti aria-hidden="true"></canvas>
@@ -1062,14 +1075,18 @@
         if (scratchDone) return;
         scratchDone = true;
         scratch.classList.add('cleared');
-        // The voucher opens only by scanning the code.
         delete scratchHost.dataset.cursor;
         cursor.classList.remove('big');
         window.Sound?.scratch.stop();
         window.Sound?.play('chime', { volume: .8 });
         window.Sound?.play('pop', { volume: .7, delay: .05 });
         burstFrom(scratchHost, 90, .75);
-        document.querySelector('[data-wish-dek]').textContent = 'Scan the code to claim your gift. Happy 22nd.';
+        document.querySelector('[data-wish-dek]').textContent = 'Scan the code — or tap below — to claim your gift. Happy 22nd.';
+        const giftLink = document.querySelector('[data-gift-link]');
+        if (giftLink) {
+          giftLink.hidden = false;
+          requestAnimationFrame(() => giftLink.classList.add('show'));
+        }
       }
       const pointFrom = (e) => {
         const r = scratch.getBoundingClientRect();
