@@ -337,9 +337,6 @@
     .share [data-share="zalo"] svg { width: 22px; height: 22px; }
     .share-toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 120; transform: translate(-50%, 20px); max-width: calc(100vw - 32px); background: var(--paper); color: var(--ink); padding: 12px 18px; border-radius: 999px; font: 500 11px/1.4 var(--sans); letter-spacing: .04em; text-align: center; opacity: 0; pointer-events: none; transition: opacity .3s, transform .4s var(--ease); }
     .share-toast.on { opacity: 1; transform: translate(-50%, 0); }
-    .voucher-link { margin-top: 18px; color: var(--paper); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; padding: 12px 18px; border: 1px solid rgba(243,238,232,.5); border-radius: 999px; animation: rise-in .9s var(--ease) both; }
-    @keyframes rise-in { from { opacity: 0; transform: translateY(10px); } }
-    .qr { cursor: pointer; }
     .barcode .price { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 16px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; border-top: 1px solid rgba(40,37,31,.2); padding-top: 9px; }
 
     @media (max-width: 760px) {
@@ -626,9 +623,7 @@
             </div>
             <div class="price"><span>Nº22 — 31.10</span><span>Scratch to unwrap</span></div>
           </div>
-        </div>
-        <a class="voucher-link" href="voucher.html" data-voucher-link hidden>Open your voucher <span aria-hidden="true">→</span></a>
-      </div>
+        </div>      </div>
     </div>
     <div class="back-bottom"><span>Phương Anh Magazine is published once a year, every October 31.</span><span>Happy 22nd birthday</span></div>
     <canvas class="confetti" data-confetti aria-hidden="true"></canvas>
@@ -1061,16 +1056,11 @@
         if (scratchDone) return;
         scratchDone = true;
         scratch.classList.add('cleared');
-        // She is probably reading on the phone she would scan with, so the code is also a link.
-        // Ignore the click that ends the final scratch stroke; only a deliberate tap opens it.
-        const revealedAt = performance.now();
-        scratchHost.dataset.cursor = 'Open';
-        scratchHost.addEventListener('click', () => {
-          if (performance.now() - revealedAt > 900) location.href = 'voucher.html';
-        });
-        document.querySelector('[data-voucher-link]').hidden = false;
+        // The voucher opens only by scanning the code.
+        delete scratchHost.dataset.cursor;
+        cursor.classList.remove('big');
         burstFrom(scratchHost, 90, .75);
-        document.querySelector('[data-wish-dek]').textContent = 'Scan it, or tap it. Your voucher is waiting. Happy 22nd.';
+        document.querySelector('[data-wish-dek]').textContent = 'Scan the code to claim your gift. Happy 22nd.';
       }
       const pointFrom = (e) => {
         const r = scratch.getBoundingClientRect();
