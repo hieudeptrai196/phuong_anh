@@ -88,30 +88,25 @@
     .code { text-align: right; font-size: 1.9cqw; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
     .code b { display: block; margin-top: 1cqw; font-family: var(--serif); font-weight: 400; font-size: 4cqw; letter-spacing: .04em; color: var(--ink); }
 
-    /* ---------- Deck: sealed vouchers gliding left to right ---------- */
-    .deck { width: 100%; display: grid; justify-items: center; gap: 28px; color: var(--paper); }
+    /* ---------- Deck: a pack of sealed vouchers, shuffled and spread on the table ---------- */
+    .deck { width: 100%; display: grid; justify-items: center; gap: 22px; color: var(--paper); }
     .deck-head { text-align: center; display: grid; gap: 10px; }
     .deck-head h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(34px, 5vw, 56px); letter-spacing: -.02em; line-height: 1; }
     .deck-head p { margin: 0; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; opacity: .7; }
-    /* Two endless belts gliding in opposite directions; each track holds the same run twice
-       and shifts by exactly half its length, so the loop never shows a seam. */
-    .belts { display: grid; }
-    .belt {
-      width: 100vw; overflow: hidden; padding: 16px 0 22px;
-      -webkit-mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-              mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    /* Each card is placed by --x / --y / --r (set from JS for the stack, the riffle and the fan);
+       --lift raises a card along its own axis when hovered. */
+    .table { --cw: clamp(84px, 10vw, 128px); position: relative; width: min(1100px, 100vw); height: calc(var(--cw) * 2.6); }
+    .card {
+      appearance: none; border: 0; background: none; padding: 0; cursor: pointer;
+      position: absolute; left: 50%; bottom: 10%; width: var(--cw); margin-left: calc(var(--cw) / -2);
+      transform-origin: 50% 100%;
+      transform: translate(var(--x, 0px), var(--y, 0px)) rotate(var(--r, 0deg)) translateY(var(--lift, 0px));
+      transition: transform .6s var(--ease);
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .45));
     }
-    .track { display: flex; width: max-content; animation: glide 60s linear infinite; }
-    .track.reverse { animation-direction: reverse; animation-duration: 72s; }
-    .belt:hover .track, .belt:focus-within .track { animation-play-state: paused; }
-    @keyframes glide { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-    .mini {
-      appearance: none; border: 0; background: none; padding: 0; margin-right: 14px; cursor: pointer; width: clamp(128px, 12.5vw, 176px);
-      transform: rotate(var(--tilt, 0deg)); transition: transform .5s var(--ease), filter .5s var(--ease);
-      filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .4));
-    }
-    .mini:hover, .mini:focus-visible { transform: translateY(-10px) rotate(0deg) scale(1.03); outline: none; filter: drop-shadow(0 26px 30px rgba(0, 0, 0, .5)); }
-    .mini .claim small, .mini .meta { display: none; }
+    .table.spread .card:hover, .table.spread .card:focus-visible, .card.lifted { --lift: calc(var(--cw) * -.28); outline: none; }
+    .table.busy .card { pointer-events: none; cursor: default; }
+    .card .claim small, .card .meta { display: none; }
     .btn {
       appearance: none; cursor: pointer; color: var(--paper); background: transparent; text-decoration: none;
       font-size: 10px; letter-spacing: .2em; text-transform: uppercase; padding: 12px 18px;
@@ -167,7 +162,16 @@
     .render[data-render="pair"] .face { width: 47%; height: auto; }
     .render[data-render="front"] .back-face { display: none; }
 
-    @media (prefers-reduced-motion: reduce) { .track { animation: none; } .belt { overflow-x: auto; } }
+    /* ---------- Locked until the birthday ---------- */
+    .locked { display: grid; justify-items: center; gap: 22px; color: var(--paper); text-align: center; }
+    .locked h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(44px, 7vw, 84px); letter-spacing: -.03em; line-height: 1; }
+    .locked p { margin: 0; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; opacity: .7; }
+    .cd-row { display: flex; align-items: flex-start; gap: clamp(10px, 1.6vw, 22px); margin: 10px 0 8px; font-family: var(--serif); font-size: clamp(30px, 4vw, 52px); line-height: 1.1; font-variant-numeric: lining-nums tabular-nums; }
+    .cd { display: grid; justify-items: center; gap: 6px; }
+    .cd small { font-family: var(--sans); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; opacity: .6; }
+    .cd-row b { font-weight: 400; opacity: .4; }
+
+    @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
   </style>
 </head>
 <body>
@@ -196,17 +200,27 @@
     </section>
   </template>
 
+  <!-- LOCKED (before October 31, 00:00 Hà Nội) -->
+  <section class="locked" data-locked hidden>
+    <h1>Not yet.</h1>
+    <p>The deck opens on October 31, 00:00 — Hà Nội</p>
+    <div class="cd-row" role="timer" aria-live="off">
+      <div class="cd"><span data-cd="d">00</span><small>Days</small></div><b>:</b>
+      <div class="cd"><span data-cd="h">00</span><small>Hours</small></div><b>:</b>
+      <div class="cd"><span data-cd="m">00</span><small>Minutes</small></div><b>:</b>
+      <div class="cd"><span data-cd="s">00</span><small>Seconds</small></div>
+    </div>
+    <a class="back-link" href="index.html">Back to the issue</a>
+  </section>
+
   <!-- DECK -->
   <section class="deck" data-deck>
     <div class="deck-head">
-      <h1>Pick a voucher.</h1>
-      <p>Sealed gifts · one is yours</p>
+      <h1>Pick a card.</h1>
+      <p data-deck-status>Shuffle the deck to begin</p>
     </div>
-    <div class="belts">
-      <div class="belt"><div class="track" data-track></div></div>
-      <div class="belt"><div class="track reverse" data-track></div></div>
-    </div>
-    <button class="btn solid" type="button" data-draw>Draw for me</button>
+    <div class="table" data-table></div>
+    <button class="btn solid" type="button" data-shuffle>Shuffle</button>
     <a class="back-link" href="index.html">Back to the issue</a>
   </section>
 
@@ -254,6 +268,7 @@
     </div>
   </section>
 
+  <script src="assets/sound.js"></script>
   <script>
     (() => {
       // The denominations, drawn with equal odds.
@@ -312,68 +327,189 @@
         return;
       }
 
-      /* ---- Deck: two belts of sealed cards, each run long enough to overfill the widest screen ---- */
-      const CARDS_PER_RUN = 14;
-      const TILTS = [-4, 3, -2, 4, -3, 2, -1];
-      const minis = [];
-      document.querySelectorAll('[data-track]').forEach((track, row) => {
-        for (let copy = 0; copy < 2; copy++) {
-          for (let i = 0; i < CARDS_PER_RUN; i++) {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'mini';
-            b.style.setProperty('--tilt', `${TILTS[(i + row * 3) % TILTS.length]}deg`);
-            b.setAttribute('aria-label', 'Pick this sealed voucher');
-            if (copy) { b.tabIndex = -1; b.setAttribute('aria-hidden', 'true'); }
-            b.innerHTML = `<div class="ticket">${frontHTML}</div>`;
-            b.addEventListener('click', () => pick(b));
-            track.appendChild(b);
-            minis.push(b);
-          }
-        }
-      });
-      document.querySelector('[data-draw]').addEventListener('click', () => {
-        // pick whichever sealed card is closest to the middle of the screen
-        const mid = window.innerWidth / 2;
-        const closest = minis.reduce((best, m) => {
-          const r = m.getBoundingClientRect();
-          const d = Math.abs(r.left + r.width / 2 - mid);
-          return d < best.d ? { m, d } : best;
-        }, { m: minis[0], d: Infinity }).m;
-        pick(closest);
-      });
+      /* ---- Locked until her birthday, Hà Nội time; ?lock=off (or ?preview) opens it early ---- */
+      const OPENS_AT = new Date('2026-10-31T00:00:00+07:00').getTime();
+      const unlocked = params.get('lock') === 'off' || params.has('preview') || Date.now() >= OPENS_AT;
+      if (!unlocked) {
+        const locked = document.querySelector('[data-locked]');
+        const digits = Object.fromEntries([...locked.querySelectorAll('[data-cd]')].map((el) => [el.dataset.cd, el]));
+        const two = (n) => String(n).padStart(2, '0');
+        deck.hidden = true;
+        locked.hidden = false;
+        const tick = () => {
+          const left = OPENS_AT - Date.now();
+          if (left <= 0) { location.reload(); return; }
+          const s = Math.floor(left / 1000);
+          digits.d.textContent = two(Math.min(99, Math.floor(s / 86400)));
+          digits.h.textContent = two(Math.floor(s / 3600) % 24);
+          digits.m.textContent = two(Math.floor(s / 60) % 60);
+          digits.s.textContent = two(s % 60);
+        };
+        tick();
+        setInterval(tick, 1000);
+        return;
+      }
 
+      /* ---- Deck: stack → shuffle → fan the cards out on the table ---- */
+      const table = document.querySelector('[data-table]');
+      const status = document.querySelector('[data-deck-status]');
+      const CARD_COUNT = window.innerWidth < 600 ? 13 : 19;
+      const SHUFFLES = 3;
+      const HOVER_MS = 180;                       // lift speed once the cards are spread
+      const FIRST_DRAW_VALUES = [1000, 2000];
+      const JACKPOT = 1000000;                   // revealed with a birthday cheer and confetti
+      const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
+      const cards = [];
+      for (let i = 0; i < CARD_COUNT; i++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'card';
+        b.setAttribute('aria-label', 'Draw this card');
+        b.innerHTML = `<div class="ticket">${frontHTML}</div>`;
+        b.addEventListener('click', () => pick(b));
+        table.appendChild(b);
+        cards.push(b);
+      }
+
+      function place(card, x, y, r, { duration = 600, delay = 0 } = {}) {
+        card.style.transitionDuration = `${duration}ms`;
+        card.style.transitionDelay = `${delay}ms`;
+        card.style.setProperty('--x', `${x}px`);
+        card.style.setProperty('--y', `${y}px`);
+        card.style.setProperty('--r', `${r}deg`);
+      }
+      const cardWidth = () => cards[0].getBoundingClientRect().width || 100;
+      const jitter = (n) => (Math.random() - .5) * n;
+
+      // A neat pile in the middle; order = z-order, top card last.
+      function stack(opts) {
+        cards.forEach((c, i) => { c.style.zIndex = i; place(c, jitter(3), -i * .6, jitter(3), opts); });
+      }
+      // Riffle: split the pile into two halves that slide apart, then shuffle the order.
+      function split() {
+        const w = cardWidth();
+        cards.forEach((c, i) => {
+          const left = i % 2 === 0;
+          place(c, (left ? -1 : 1) * w * .62 + jitter(4), -i * .6, (left ? -9 : 9) + jitter(2), { duration: 260 });
+        });
+      }
+      function reshuffle() {
+        for (let i = cards.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [cards[i], cards[j]] = [cards[j], cards[i]];
+        }
+      }
+      // Fan the pile out along an arc that fits the table width.
+      function fan() {
+        const n = cards.length;
+        const width = table.clientWidth;
+        const span = window.innerWidth < 600 ? 64 : 76;           // degrees covered by the fan
+        // widest radius whose outermost card (plus its tilt) still clears the table edges
+        const half = span / 2 * Math.PI / 180;
+        const radius = Math.max(cardWidth() * 2.4, (width / 2 - cardWidth() * 1.5) / Math.sin(half));
+        cards.forEach((c, i) => {
+          const a = (-span / 2 + span * i / (n - 1)) * Math.PI / 180;
+          c.style.zIndex = i;
+          place(c, Math.sin(a) * radius, (1 - Math.cos(a)) * radius * .55, a * 180 / Math.PI, { duration: 700, delay: i * 40 });
+        });
+      }
+
+      const shuffleBtn = document.querySelector('[data-shuffle]');
+      let dealing = false;
+      async function deal() {
+        if (dealing) return;
+        dealing = true;
+        const wasSpread = table.classList.contains('spread');
+        table.classList.remove('spread');
+        table.classList.add('busy');
+        shuffleBtn.disabled = true;
+        status.textContent = 'Shuffling the deck…';
+        cards.forEach((c) => c.classList.remove('lifted'));
+        if (wasSpread) window.Sound?.play('gather', { volume: .8 });
+        stack({ duration: 500, delay: 0 });
+        await wait(wasSpread ? 560 : 120);
+        window.Sound?.play('shuffle', { volume: .9 });
+        for (let k = 0; k < SHUFFLES; k++) {
+          split();
+          await wait(300);
+          reshuffle();
+          stack({ duration: 260 });
+          await wait(320);
+        }
+        fan();
+        // one soft card-slide per card, following the fan's stagger
+        cards.forEach((c, i) => window.Sound?.play('deal', { volume: .22, rate: .9 + Math.random() * .25, delay: i * .04 + .05 }));
+        await wait(700 + cards.length * 40);
+        makeSnappy();
+        table.classList.remove('busy');
+        table.classList.add('spread');
+        status.textContent = 'Tap a card to draw';
+        shuffleBtn.textContent = 'Shuffle again';
+        shuffleBtn.disabled = false;
+        dealing = false;
+      }
+      // Once spread, drop the dealing delays so a hovered card lifts straight away.
+      function makeSnappy() {
+        cards.forEach((c) => { c.style.transitionDelay = '0ms'; c.style.transitionDuration = `${HOVER_MS}ms`; });
+      }
+
+      // The deck waits for a tap: that tap is also what lets the browser play the shuffle sound.
+      shuffleBtn.addEventListener('click', () => deal());
+
+      // The first draw of a visit is always a small one (1.000₫ or 2.000₫); later draws are fully
+      // random but never repeat the value just drawn.
+      let draws = 0;
       function drawValue() {
-        const pool = VOUCHERS.filter((v) => v !== current);
+        const pool = draws++ === 0
+          ? VOUCHERS.filter((v) => FIRST_DRAW_VALUES.includes(v.value))
+          : VOUCHERS.filter((v) => v !== current);
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
-      function pick(mini) {
-        const from = mini.querySelector('.ticket').getBoundingClientRect();
+      function pick(card) {
+        if (dealing || !table.classList.contains('spread')) return;
+        window.Sound?.play('whoosh', { volume: .55 });
+        const from = card.querySelector('.ticket').getBoundingClientRect();
+        const tilt = card.style.getPropertyValue('--r') || '0deg';
         current = drawValue();
         fillBack(current);
         resetCard();
         deck.hidden = true;
         reveal.hidden = false;
-        // fly the picked card from the belt to the centre
+        // fly the drawn card from the table to the centre
         const to = stage.getBoundingClientRect();
         const dx = from.left + from.width / 2 - (to.left + to.width / 2);
         const dy = from.top + from.height / 2 - (to.top + to.width * 1.25 / 2);
         const s = from.width / to.width;
         if (!reduce) {
           stage.animate(
-            [{ transform: `translate(${dx}px, ${dy}px) scale(${s}) rotate(${getComputedStyle(mini).getPropertyValue('--tilt')})` }, { transform: 'none' }],
+            [{ transform: `translate(${dx}px, ${dy}px) scale(${s}) rotate(${tilt})` }, { transform: 'none' }],
             { duration: 800, easing: 'cubic-bezier(.22,.75,.25,1)' }
           );
         }
         stage.focus({ preventScroll: true });
       }
 
+      // Drawing again gathers the cards, shuffles the deck and spreads it out again.
       document.querySelector('[data-again]').addEventListener('click', () => {
         reveal.hidden = true;
         deck.hidden = false;
         window.scrollTo({ top: 0 });
+        deal();
       });
+
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (!table.classList.contains('spread')) return;
+          fan();
+          setTimeout(makeSnappy, 700 + cards.length * 40);
+        }, 150);
+      });
+
+      stack({ duration: 0 });
+      table.classList.add('busy');
 
       /* ---- 3D card: drag to turn, tap to flip ---- */
       let ry = 0, rx = 0, target = 0, velocity = 0;
@@ -416,17 +552,53 @@
         dragging = false;
         stage.classList.remove('grabbing');
         // A tap flips the card; a drag carries its momentum, then rests on the nearest face.
+        const prev = target;
         target = moved < TAP_SLOP_PX
           ? Math.round(ry / 180) * 180 + 180
           : Math.round((ry + clamp(velocity * 10, -180, 180)) / 180) * 180;
+        if (target !== prev) window.Sound?.play('flip', { volume: .8, rate: .95 + Math.random() * .1 });
       };
       stage.addEventListener('pointerup', release);
       stage.addEventListener('pointercancel', release);
       stage.addEventListener('pointerleave', () => { hoverX = 0; hoverY = 0; });
       stage.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); touched = true; target += 180; }
-        if (e.key === 'ArrowLeft') { e.preventDefault(); touched = true; target -= 180; }
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); touched = true; target += 180; window.Sound?.play('flip', { volume: .8 }); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); touched = true; target -= 180; window.Sound?.play('flip', { volume: .8 }); }
       });
+
+      /* ---- Confetti for the jackpot ---- */
+      const confetti = document.createElement('canvas');
+      confetti.setAttribute('aria-hidden', 'true');
+      Object.assign(confetti.style, { position: 'fixed', inset: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: '20' });
+      document.body.appendChild(confetti);
+      function burstConfetti(ox, oy) {
+        if (reduce) return;
+        const ctx = confetti.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = window.innerWidth, h = window.innerHeight;
+        confetti.width = w * dpr; confetti.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const colors = ['#ead1c2', '#dce5ed', '#eee6bd', '#e4dfe8', '#f3eee8', '#f2b45a'];
+        const bits = Array.from({ length: 180 }, () => {
+          const a = -Math.PI / 2 + (Math.random() - .5) * 2.4, sp = 8 + Math.random() * 14;
+          return { x: ox, y: oy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, w: 6 + Math.random() * 7, h: 9 + Math.random() * 12,
+            r: Math.random() * Math.PI, vr: (Math.random() - .5) * .3, p: Math.random() * 6, vp: .08 + Math.random() * .12,
+            c: colors[(Math.random() * colors.length) | 0] };
+        });
+        const step = () => {
+          ctx.clearRect(0, 0, w, h);
+          let alive = 0;
+          for (const b of bits) {
+            b.vy += .28; b.vx *= .985; b.vy *= .985; b.vx += Math.sin(b.p) * .12;
+            b.x += b.vx; b.y += b.vy; b.r += b.vr; b.p += b.vp;
+            if (b.y < h + 30) alive++;
+            ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.r); ctx.scale(1, Math.cos(b.p));
+            ctx.fillStyle = b.c; ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h); ctx.restore();
+          }
+          if (alive) requestAnimationFrame(step); else ctx.clearRect(0, 0, w, h);
+        };
+        requestAnimationFrame(step);
+      }
 
       const frame = (t) => {
         if (!reveal.hidden) {
@@ -451,6 +623,14 @@
             opened = true;
             after.classList.add('on');
             hint.textContent = 'Drag to turn · Tap to flip';
+            // The big one gets a birthday cheer and confetti; the rest a small win chime.
+            if (current && current.value === JACKPOT) {
+              window.Sound?.play('cheer', { volume: .85 });
+              const r = stage.getBoundingClientRect();
+              burstConfetti(r.left + r.width / 2, r.top + r.height * .3);
+            } else {
+              window.Sound?.play('win', { volume: .6 });
+            }
           }
         }
         requestAnimationFrame(frame);

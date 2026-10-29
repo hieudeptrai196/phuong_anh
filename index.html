@@ -80,6 +80,10 @@
     .shot .runner, .shot .grain, .shot .cursor, .shot .toc-preview, .shot .loader, .shot .dl, .shot .dim { display: none !important; }
     .shot *, .shot *::before, .shot *::after { transition: none !important; animation: none !important; }
 
+    /* Sound toggle (from assets/sound.js): bottom-centre here, where every page has free space. */
+    body .sound-toggle { right: auto; left: 50%; transform: translateX(-50%); bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+    .loading .sound-toggle { display: none; }
+
     /* ---------- Film grain ---------- */
     .grain {
       position: fixed; inset: -50%; z-index: 90; pointer-events: none; opacity: .07;
@@ -630,6 +634,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="assets/sound.js"></script>
   <script>
     (() => {
       // Scene 04 camera: zoom at the end, and where she stands in the photo (fractions of width/height).
@@ -872,6 +877,7 @@
         root.classList.remove('loading');
         root.classList.add('ready');
         if (lenis) lenis.start();
+        if (!SHOT && window.Sound) { Sound.play('page-open', { volume: .9 }); Sound.music.start(); }
         setTimeout(() => loader.remove(), 1300);
       }
       if (SHOT) { root.classList.add('shot'); finishLoading(); }
@@ -1059,6 +1065,9 @@
         // The voucher opens only by scanning the code.
         delete scratchHost.dataset.cursor;
         cursor.classList.remove('big');
+        window.Sound?.scratch.stop();
+        window.Sound?.play('chime', { volume: .8 });
+        window.Sound?.play('pop', { volume: .7, delay: .05 });
         burstFrom(scratchHost, 90, .75);
         document.querySelector('[data-wish-dek]').textContent = 'Scan the code to claim your gift. Happy 22nd.';
       }
@@ -1066,17 +1075,25 @@
         const r = scratch.getBoundingClientRect();
         return { x: e.clientX - r.left, y: e.clientY - r.top };
       };
+      let lastMoveT = 0;
       scratch.addEventListener('pointerdown', (e) => {
         if (!scratchActive || scratchDone) return;
-        scratching = true; lastPt = null;
+        scratching = true; lastPt = null; lastMoveT = performance.now();
         scratch.setPointerCapture(e.pointerId);
+        window.Sound?.scratch.start();
         const p = pointFrom(e); scratchAt(p.x, p.y);
       });
       scratch.addEventListener('pointermove', (e) => {
         if (!scratching) return;
-        const p = pointFrom(e); scratchAt(p.x, p.y);
+        const p = pointFrom(e);
+        // louder the faster the finger moves
+        const now = performance.now();
+        const dist = lastPt ? Math.hypot(p.x - lastPt.x, p.y - lastPt.y) : 0;
+        window.Sound?.scratch.level(dist / Math.max(8, now - lastMoveT) / 1.1);
+        lastMoveT = now;
+        scratchAt(p.x, p.y);
       });
-      const endScratch = () => { if (scratching) { scratching = false; lastPt = null; checkCleared(); } };
+      const endScratch = () => { if (scratching) { scratching = false; lastPt = null; window.Sound?.scratch.stop(); checkCleared(); } };
       scratch.addEventListener('pointerup', endScratch);
       scratch.addEventListener('pointercancel', endScratch);
       // Keyboard fallback: Enter/Space on the card reveals it outright.
@@ -1093,7 +1110,9 @@
         candle.setAttribute('aria-label', 'Candle blown out');
         delete candle.dataset.cursor;
         cursor.classList.remove('big');
+        window.Sound?.play('blow');
         setTimeout(() => {
+          window.Sound?.play('pop', { volume: .9 });
           burstFrom(candle, 170, 1);
           document.querySelector('[data-gift]').classList.remove('locked');
           document.querySelector('[data-candle-hint]').textContent = 'Now scratch the card';
@@ -1126,6 +1145,9 @@
         const pin = section.querySelector('.scene-pin');
         pin.style.transform = q > 0 && !reduce ? `scale(${1 - q * .06})` : '';
         pin.querySelector('.dim').style.opacity = q * .6;
+        // A page-turn rustle as the next chapter starts to slide over this one (again after scrolling back).
+        if (q > .08 && !section.dataset.turned) { section.dataset.turned = '1'; window.Sound?.play('page-turn', { volume: .55, rate: .95 + Math.random() * .1 }); }
+        else if (q < .02 && section.dataset.turned) delete section.dataset.turned;
 
         switch (section.dataset.scene) {
           case 'portrait': {
