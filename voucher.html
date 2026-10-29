@@ -40,15 +40,38 @@
     }
     .label { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
 
-    /* Ticket: main body + stub, joined by a perforation with notches cut from both sides. */
-    .ticket {
-      width: min(420px, 100%); aspect-ratio: 4 / 5; container-type: inline-size;
-      display: grid; grid-template-rows: 1fr auto;
-      filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .45));
+    /* 3D stage: drag to turn, tap to flip. The card has a front (the voucher) and a back (terms). */
+    .stage {
+      width: min(420px, 100%); position: relative; perspective: 1400px;
+      touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab; outline: none;
       animation: arrive 1.2s var(--ease) both;
     }
-    @keyframes arrive { from { opacity: 0; transform: translateY(24px) rotate(-1.5deg); } }
+    .stage.grabbing { cursor: grabbing; }
+    .stage:focus-visible .card3d { outline: 1px solid rgba(243, 238, 232, .5); outline-offset: 10px; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(24px); } }
+    .card3d { position: relative; transform-style: preserve-3d; will-change: transform; }
+    .face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .back-face { position: absolute; inset: 0; transform: rotateY(180deg); }
+    .floor {
+      position: absolute; left: 12%; right: 12%; bottom: -34px; height: 40px; z-index: -1; pointer-events: none;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, .6), transparent 70%); filter: blur(8px);
+      transform: scaleX(var(--sx, 1));
+    }
+    .hint { color: var(--paper); opacity: .55; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; margin: 14px 0 0; }
+
+    /* Ticket: main body + stub, joined by a perforation with notches cut from both sides. */
+    .ticket {
+      width: 100%; aspect-ratio: 4 / 5; container-type: inline-size;
+      display: grid; grid-template-rows: 1fr auto;
+    }
+    /* A sheen that sweeps across the paper as the card turns (masked with the ticket shape). */
+    .main::after, .stub::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light;
+      background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .7) 48%, transparent 66%) var(--gp, 50%) 0 / 300% 100% no-repeat;
+      opacity: var(--go, .25);
+    }
     .main, .stub {
+      position: relative;
       background: var(--paper);
       --notch: radial-gradient(circle 4.2cqw at 0 100%, #0000 98%, #000) left / 51% 100% no-repeat,
                radial-gradient(circle 4.2cqw at 100% 100%, #0000 98%, #000) right / 51% 100% no-repeat;
@@ -86,6 +109,13 @@
     .code { text-align: right; font-size: 1.9cqw; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
     .code b { display: block; margin-top: 1cqw; font-family: var(--serif); font-weight: 400; font-size: 4cqw; letter-spacing: .04em; color: var(--ink); }
 
+    /* Back of the card */
+    .terms { margin: 0; padding: 0; list-style: none; counter-reset: t; display: grid; gap: 2.4cqw; align-self: center; }
+    .terms li { counter-increment: t; display: grid; grid-template-columns: 7cqw 1fr; align-items: baseline; font-family: var(--serif); font-size: 4.3cqw; line-height: 1.3; letter-spacing: -.01em; }
+    .terms li::before { content: counter(t, decimal-leading-zero); font-family: var(--sans); font-size: 2cqw; letter-spacing: .16em; color: var(--muted); }
+    .terms em { font-style: italic; }
+    .back-stub .claim { font-size: 7cqw; }
+
     .actions { display: flex; gap: 18px; align-items: center; color: var(--paper); }
     .actions a { color: inherit; text-decoration: none; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; padding: 12px 18px; border: 1px solid rgba(243, 238, 232, .5); border-radius: 999px; }
     .actions a:active { transform: scale(.97); }
@@ -104,14 +134,17 @@
     /* ?render — a bare 4:5 ticket used to export voucher.png */
     .render .share { display: none; }
     .render body { padding: 0; place-items: stretch; background: var(--ink); }
-    .render .ticket { width: 100%; height: 100%; aspect-ratio: auto; filter: none; animation: none; padding: 5%; }
-    .render .actions { display: none; }
-    @media (prefers-reduced-motion: reduce) { .ticket { animation: none; } }
+    .render .stage, .render .card3d { width: 100%; height: 100%; perspective: none; animation: none; transform: none !important; }
+    .render .ticket { height: 100%; aspect-ratio: auto; padding: 5%; }
+    .render .actions, .render .back-face, .render .floor, .render .hint, .render .main::after, .render .stub::after { display: none; }
+    @media (prefers-reduced-motion: reduce) { .stage { animation: none; } }
   </style>
 </head>
 <body>
   <script>if (new URLSearchParams(location.search).has('render')) document.documentElement.classList.add('render');</script>
-  <main class="ticket" aria-label="Gift voucher, 1.000.000 đồng. Vui lòng IB để nhận quà.">
+  <div class="stage" data-stage tabindex="0" role="group" aria-roledescription="3D card" aria-label="Gift voucher. Drag to turn, press Enter to flip.">
+  <div class="card3d" data-card>
+  <main class="ticket face front-face" aria-label="Gift voucher, 1.000.000 đồng. Vui lòng IB để nhận quà.">
     <section class="main">
       <div class="top"><span>Phương Anh Magazine</span><b>Nº22</b></div>
       <div class="kind">Gift voucher — Birthday edition</div>
@@ -131,6 +164,32 @@
       </div>
     </section>
   </main>
+  <section class="ticket face back-face" aria-label="Back of the voucher: terms and conditions">
+    <div class="main">
+      <div class="top"><span>Phương Anh Magazine</span><b>Nº22</b></div>
+      <div class="kind">Terms &amp; conditions</div>
+      <ol class="terms">
+        <li><span>Valid for the cover star only: <em>Nguyễn Phương Anh.</em></span></li>
+        <li><span>Redeem by sending a message (IB) to Family.</span></li>
+        <li><span>No expiry date. <em>Hugs included.</em></span></li>
+        <li><span>Not exchangeable for anything less than a birthday cake.</span></li>
+      </ol>
+      <div class="meta">
+        <div><small>Issued by</small><span>Family</span></div>
+        <div><small>Issue</small><span>Nº22 — 31.10</span></div>
+      </div>
+    </div>
+    <div class="stub back-stub">
+      <div class="stub-row">
+        <div class="claim">Happy 22nd<br>birthday.<small>With love, Family</small></div>
+        <div class="code">Voucher code<b>PA-22-3110</b></div>
+      </div>
+    </div>
+  </section>
+  </div>
+  <div class="floor" aria-hidden="true"></div>
+  </div>
+  <p class="hint">Drag to turn · Tap to flip</p>
   <nav class="actions">
     <a href="assets/voucher.png" download="voucher-phuong-anh.png">Save voucher</a>
     <a href="index.html">Back to the issue</a>
@@ -144,6 +203,84 @@
     <button data-share="instagram"></button>
     <button data-share="zalo"></button>
   </div>
+  <script>
+    (() => {
+      if (document.documentElement.classList.contains('render')) return;
+      const DRAG_DEG_PER_PX = 0.5;   // how far the card turns per pixel dragged
+      const TAP_SLOP_PX = 6;         // movement below this counts as a tap (flip)
+      const SETTLE = 0.085;          // easing toward the resting face
+      const stage = document.querySelector('[data-stage]');
+      const card = stage.querySelector('[data-card]');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+      let ry = 0, rx = 0, target = 0, velocity = 0;
+      let dragging = false, moved = 0, lastX = 0, startY = 0, lastT = 0, touched = false;
+      let hoverX = 0, hoverY = 0;
+
+      stage.addEventListener('pointerdown', (e) => {
+        dragging = true; touched = true; moved = 0; velocity = 0;
+        lastX = e.clientX; startY = e.clientY; lastT = performance.now();
+        stage.setPointerCapture(e.pointerId);
+        stage.classList.add('grabbing');
+      });
+      stage.addEventListener('pointermove', (e) => {
+        if (!dragging) {
+          if (finePointer) {
+            const r = stage.getBoundingClientRect();
+            hoverX = (e.clientX - r.left) / r.width - .5;
+            hoverY = (e.clientY - r.top) / r.height - .5;
+          }
+          return;
+        }
+        const now = performance.now();
+        const dx = clamp(e.clientX - lastX, -80, 80);   // ignore jumps between coalesced events
+        moved += Math.abs(dx);
+        ry += dx * DRAG_DEG_PER_PX;
+        rx = clamp(-(e.clientY - startY) * .12, -16, 16);
+        // degrees per frame, measured over at least one frame and capped so a flick can't spin forever
+        velocity = clamp((dx * DRAG_DEG_PER_PX) / Math.max(16, now - lastT) * 16, -24, 24);
+        lastX = e.clientX; lastT = now;
+      });
+      const release = () => {
+        if (!dragging) return;
+        dragging = false;
+        stage.classList.remove('grabbing');
+        // A tap flips the card; a drag carries its momentum, then rests on the nearest face.
+        target = moved < TAP_SLOP_PX
+          ? Math.round(ry / 180) * 180 + 180
+          : Math.round((ry + clamp(velocity * 10, -180, 180)) / 180) * 180;
+      };
+      stage.addEventListener('pointerup', release);
+      stage.addEventListener('pointercancel', release);
+      stage.addEventListener('pointerleave', () => { hoverX = 0; hoverY = 0; });
+      stage.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); touched = true; target += 180; }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); touched = true; target -= 180; }
+      });
+
+      const frame = (t) => {
+        if (!dragging) {
+          ry += (target - ry) * (reduce ? 1 : SETTLE);
+          rx += (0 - rx) * .1;
+        }
+        // Until the first touch, a gentle sway hints that the card turns.
+        const sway = !touched && !reduce ? Math.sin(t / 900) * 9 : 0;
+        const tiltY = finePointer && !dragging ? hoverX * 16 : 0;
+        const tiltX = finePointer && !dragging ? -hoverY * 12 : 0;
+        const y = ry + sway + tiltY;
+        const x = rx + tiltX;
+        card.style.transform = `rotateX(${x.toFixed(2)}deg) rotateY(${y.toFixed(2)}deg)`;
+        const rad = y * Math.PI / 180;
+        card.style.setProperty('--gp', `${(50 + Math.sin(rad) * 140).toFixed(1)}%`);
+        card.style.setProperty('--go', (0.18 + Math.abs(Math.sin(rad)) * 0.8).toFixed(2));
+        stage.style.setProperty('--sx', (0.55 + 0.45 * Math.abs(Math.cos(rad))).toFixed(3));
+        requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    })();
+  </script>
   <script src="assets/share.js"></script>
 </body>
 </html>
