@@ -31,11 +31,17 @@ for page in cover portrait travel grad work; do
   echo "page  $page"
 done
 
-shoot "$LOCAL/voucher.html?render" 540 675 "$TMP/voucher.png"
-magick "$TMP/voucher.png" -strip assets/voucher.png
-magick -size 1200x630 xc:'#28251F' \( assets/voucher.png -resize x600 \) -gravity center -composite \
+# Vouchers: the sealed front (link preview), and one front+back image per denomination (save/share).
+mkdir -p assets/vouchers
+shoot "$LOCAL/voucher.html?render=front" 540 675 "$TMP/voucher-front.png"
+magick "$TMP/voucher-front.png" -strip assets/vouchers/voucher-front.png
+magick -size 1200x630 xc:'#28251F' \( assets/vouchers/voucher-front.png -resize x600 \) -gravity center -composite \
   -strip -quality 86 assets/og-voucher.jpg
-echo "voucher  assets/voucher.png, assets/og-voucher.jpg"
+for value in 1000 2000 5000 10000 50000 1000000; do
+  shoot "$LOCAL/voucher.html?render=pair&value=$value" 1080 675 "$TMP/voucher-$value.png"
+  magick "$TMP/voucher-$value.png" -strip "assets/vouchers/voucher-$value.png"
+done
+echo "vouchers  assets/vouchers/, assets/og-voucher.jpg"
 
 # Link previews need absolute URLs, so point og:url / og:image at the public site.
 if [[ "$PUBLIC_URL" != "$LOCAL" ]]; then
