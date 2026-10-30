@@ -369,7 +369,7 @@
         wrap.innerHTML = '<div class="buddy-figure"></div><p class="buddy-bubble" aria-live="polite"></p>';
         document.body.appendChild(wrap);
         const bubble = wrap.querySelector('.buddy-bubble');
-        const m = window.Mascot ? Mascot.create(wrap.querySelector('.buddy-figure'), 'look') : null;
+        const m = window.Mascot ? Mascot.create(wrap.querySelector('.buddy-figure'), 'idle', { gaze: true }) : null;
         let busyUntil = 0, bubbleTimer = 0, poseTimer = 0;
         function say(text, ms = 3200) {
           bubble.textContent = text;
@@ -383,7 +383,7 @@
           if (line) say(line, ms);
           if (hop) { wrap.classList.remove('hop'); void wrap.offsetWidth; wrap.classList.add('hop'); }
           clearTimeout(poseTimer);
-          poseTimer = setTimeout(() => m?.play('look'), ms);
+          poseTimer = setTimeout(() => m?.play('idle'), ms);
         }
         wrap.addEventListener('click', () => { act('wave', pickLine('tap')); window.Sound?.play('pop', { volume: .5 }); });
         // Now and then, when nothing else is going on, a wave or a little remark.
