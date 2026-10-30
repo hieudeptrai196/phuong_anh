@@ -365,6 +365,7 @@
       const JACKPOT = 1000000;                   // revealed with a birthday cheer and confetti
       const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
       const cards = [];
+      let lastBrowse = 0;
       for (let i = 0; i < CARD_COUNT; i++) {
         const b = document.createElement('button');
         b.type = 'button';
@@ -372,6 +373,14 @@
         b.setAttribute('aria-label', 'Draw this card');
         b.innerHTML = `<div class="ticket">${frontHTML}</div>`;
         b.addEventListener('click', () => pick(b));
+        // a soft card rustle while browsing the fan (rate-limited so a fast sweep stays clean)
+        b.addEventListener('pointerenter', () => {
+          if (!table.classList.contains('spread')) return;
+          const now = performance.now();
+          if (now - lastBrowse < 70) return;
+          lastBrowse = now;
+          window.Sound?.play('deal', { volume: .18, rate: 1.1 + Math.random() * .25 });
+        });
         table.appendChild(b);
         cards.push(b);
       }
@@ -382,6 +391,8 @@
         card.style.setProperty('--x', `${x}px`);
         card.style.setProperty('--y', `${y}px`);
         card.style.setProperty('--r', `${r}deg`);
+        // Set the transform itself too: Chrome drops transitions when only the var() inputs change mid-flight.
+        card.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg) translateY(var(--lift, 0px))`;
       }
       const cardWidth = () => cards[0].getBoundingClientRect().width || 100;
       const jitter = (n) => (Math.random() - .5) * n;
