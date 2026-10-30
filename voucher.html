@@ -100,7 +100,7 @@
     .deck-head p { margin: 0; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; opacity: .7; }
     /* Each card is placed by --x / --y / --r (set from JS for the stack, the riffle and the fan);
        --lift raises a card along its own axis when hovered. */
-    .table { --cw: clamp(84px, 10vw, 128px); position: relative; width: min(1100px, 100vw); height: calc(var(--cw) * 2.6); }
+    .table { --cw: clamp(84px, 10vw, 128px); position: relative; width: min(1100px, 100vw); height: calc(var(--cw) * 2.6); touch-action: pan-y; }
     .card {
       appearance: none; border: 0; background: none; padding: 0; cursor: pointer;
       position: absolute; left: 50%; bottom: 10%; width: var(--cw); margin-left: calc(var(--cw) / -2);
@@ -373,17 +373,34 @@
         b.setAttribute('aria-label', 'Draw this card');
         b.innerHTML = `<div class="ticket">${frontHTML}</div>`;
         b.addEventListener('click', () => pick(b));
-        // a soft card rustle while browsing the fan (rate-limited so a fast sweep stays clean)
-        b.addEventListener('pointerenter', () => {
-          if (!table.classList.contains('spread')) return;
-          const now = performance.now();
-          if (now - lastBrowse < 70) return;
-          lastBrowse = now;
-          window.Sound?.play('deal', { volume: .18, rate: 1.1 + Math.random() * .25 });
-        });
+        b.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') browse(b); });
         table.appendChild(b);
         cards.push(b);
       }
+      // A card rustle while browsing the fan (rate-limited so a fast sweep stays clean).
+      let browsed = null;
+      function browse(card) {
+        if (!table.classList.contains('spread') || card === browsed) return;
+        browsed = card;
+        const now = performance.now();
+        if (now - lastBrowse < 60) return;
+        lastBrowse = now;
+        window.Sound?.play('deal', { volume: .45, rate: .95 + Math.random() * .2 });
+      }
+      table.addEventListener('pointerleave', () => { browsed = null; });
+      // Touch: pointerenter never fires while a finger slides, so follow the finger and lift the card under it.
+      table.addEventListener('pointermove', (e) => {
+        if (e.pointerType === 'mouse') return;
+        const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.card');
+        if (!card || card === browsed) return;
+        cards.forEach((c) => c.classList.toggle('lifted', c === card));
+        browse(card);
+      });
+      table.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse') return;
+        const card = e.target.closest('.card');
+        if (card) { cards.forEach((c) => c.classList.toggle('lifted', c === card)); browse(card); }
+      });
 
       function place(card, x, y, r, { duration = 600, delay = 0 } = {}) {
         card.style.transitionDuration = `${duration}ms`;
