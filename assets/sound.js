@@ -1,6 +1,7 @@
 /* Sound for both pages: short effects, background music, a synthesized scratch, and a music toggle.
  *
  *   window.Sound.play('flip', { volume, rate, delay })   // delay in seconds
+ *   window.Sound.beep()                                  // synthesized barcode-scanner beep
  *   window.Sound.music.start() / .stop()
  *   window.Sound.scratch.start() / .level(0..1) / .stop()
  *
@@ -162,8 +163,26 @@
     },
   };
 
+  /* ---- Beep: a checkout scanner's short square-wave chirp ---- */
+  function beep() {
+    if (!ctx) return;
+    unlock();
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = 1850;
+    const t = ctx.currentTime;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.07, t + 0.005);
+    g.gain.setValueAtTime(0.07, t + 0.11);
+    g.gain.linearRampToValueAtTime(0, t + 0.13);
+    osc.connect(g).connect(master);
+    osc.start(t);
+    osc.stop(t + 0.14);
+  }
+
   window.Sound = {
-    play, music, scratch, unlock,
+    play, music, scratch, unlock, beep,
     get musicOn() { return musicOn; },
     get musicPlaying() { return !audio.paused && audio.volume > 0; },
   };
