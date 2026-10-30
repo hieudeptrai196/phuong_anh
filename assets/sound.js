@@ -12,7 +12,7 @@
 (() => {
   const BASE = 'assets/sounds/';
   const EFFECTS = ['page-open', 'page-turn', 'blow', 'pop', 'chime', 'shuffle', 'gather', 'deal', 'whoosh', 'flip', 'win', 'cheer'];
-  const MUSIC_SRC = BASE + 'music.m4a';
+  const MUSIC_SRC = BASE + 'music.m4a?v=swing'; // Mixkit "Swing is the Answer"; bump v= when the track changes
   const MUSIC_VOLUME = 0.32;
   const STORE_KEY = 'pa22-music';
 
