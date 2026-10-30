@@ -1157,7 +1157,7 @@
         const seen = new IntersectionObserver((entries) => {
           if (!entries.some((e) => e.isIntersecting)) return;
           seen.disconnect();
-          giftMascot = Mascot.create(giftMascotEl, 'idle');
+          giftMascot = Mascot.create(giftMascotEl, 'idle', { gaze: true });
         }, { rootMargin: '200px 0px' });
         seen.observe(giftMascotEl);
       }
