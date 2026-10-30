@@ -102,6 +102,11 @@
       clip-path: inset(0 0 0 0); transition: clip-path 1.15s var(--ease-io);
     }
     .loader.done { clip-path: inset(0 0 100% 0); }
+    .loader.waiting { cursor: pointer; }
+    .tap-hint { display: none; margin: 18px 0 0; font-family: var(--serif); font-style: italic; font-size: clamp(18px, 2vw, 26px); animation: tap-pulse 1.6s ease-in-out infinite; }
+    .loader.waiting .tap-hint { display: block; }
+    .loader.waiting [data-loader-status] { animation: tap-pulse 1.6s ease-in-out infinite; }
+    @keyframes tap-pulse { 50% { opacity: .35; } }
     .loader-top, .loader-bottom { display: flex; justify-content: space-between; gap: 18px; }
     .loader-center { align-self: center; justify-self: center; display: grid; justify-items: center; }
     .loader-num { font-family: var(--serif); font-size: clamp(120px, 26vw, 400px); line-height: .8; letter-spacing: -.05em; font-variant-numeric: lining-nums tabular-nums; transition: transform 1.3s var(--ease-io); }
@@ -417,6 +422,7 @@
     <div class="loader-top label"><span>Phương Anh Magazine</span><span>Hà Nội</span></div>
     <div class="loader-center">
       <div class="loader-num" aria-hidden="true"><span data-count>00</span><sup>Nº</sup></div>
+      <p class="tap-hint">Tap anywhere to begin</p>
       <div class="gate">
         <p>A private edition for Phương Anh</p>
         <div class="countdown" data-countdown hidden>
@@ -766,7 +772,7 @@
       const bar = loader.querySelector('.loader-bar i');
       const status = loader.querySelector('[data-loader-status]');
       const openBtn = loader.querySelector('[data-open]');
-      const start = performance.now();
+      let start = 0;
       let assetsReady = false;
       const coverImg = document.querySelector('[data-cover-img]');
       Promise.all([
@@ -781,7 +787,7 @@
         const p = assetsReady || elapsed > MAX_LOADER_MS ? timeP : Math.min(timeP, .86);
         const n = Math.round(smooth(p) * 22);
         // a soft tick per number; silent if the browser hasn't allowed sound yet (no tap on this page)
-        if (n !== lastCount) { lastCount = n; window.Sound?.play('deal', { volume: .16, rate: 1.4 + n * .02 }); }
+        if (n !== lastCount) { lastCount = n; window.Sound?.play('deal', { volume: .3, rate: 1.4 + n * .02 }); }
         countEl.textContent = String(n).padStart(2, '0');
         bar.style.width = `${smooth(p) * 100}%`;
         if (p >= 1) return armLoader();
@@ -899,7 +905,21 @@
       }
       if (SHOT) { root.classList.add('shot'); finishLoading(); }
       else if (reduce) armLoader();
-      else requestAnimationFrame(tickLoader);
+      else {
+        // Browsers only allow sound after a tap, so the count waits for one and ticks as it runs.
+        status.textContent = 'Tap to print the issue';
+        loader.classList.add('waiting');
+        const begin = () => {
+          loader.removeEventListener('pointerdown', begin);
+          window.removeEventListener('keydown', begin);
+          loader.classList.remove('waiting');
+          status.textContent = 'Printing the October issue';
+          start = performance.now();
+          requestAnimationFrame(tickLoader);
+        };
+        loader.addEventListener('pointerdown', begin);
+        window.addEventListener('keydown', begin);
+      }
 
       /* ---- Save-this-page links: pre-rendered images, phone or desktop format ---- */
       function updateDownloads() {
