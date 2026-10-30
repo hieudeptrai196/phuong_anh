@@ -19,7 +19,7 @@
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Be+Vietnam+Pro:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Be+Vietnam+Pro:wght@400;500&family=Caveat:wght@500&display=swap">
   <style>
     :root {
       --paper: #f3eee8;
@@ -83,6 +83,59 @@
     /* Sound toggle (from assets/sound.js): bottom-centre here, where every page has free space. */
     body .sound-toggle { right: auto; left: 50%; transform: translateX(-50%); bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
     .loading .sound-toggle { display: none; }
+
+
+    /* ---------- Decor: misregistered print, candles on the 22, pencil notes, candle glow ---------- */
+    /* The masthead lands like an offset print: cyan, magenta and yellow plates slip, then register. */
+    .ready .masthead { animation: misregister 1.5s .5s cubic-bezier(.22, .75, .25, 1) both; }
+    .ready .cover-lines .line h3 { animation: misregister-sm 1.3s 1.1s cubic-bezier(.22, .75, .25, 1) both; }
+    @keyframes misregister {
+      from { text-shadow: -.05em 0 rgba(0, 174, 239, .75), .05em .01em rgba(236, 0, 140, .7), .01em .045em rgba(255, 230, 0, .7), 0 2px 30px rgba(20,18,15,.28); }
+      to   { text-shadow: 0 0 rgba(0, 174, 239, 0), 0 0 rgba(236, 0, 140, 0), 0 0 rgba(255, 230, 0, 0), 0 2px 30px rgba(20,18,15,.28); }
+    }
+    @keyframes misregister-sm {
+      from { text-shadow: -3px 0 rgba(0, 174, 239, .7), 3px 1px rgba(236, 0, 140, .65), 1px 3px rgba(255, 230, 0, .65); }
+      to   { text-shadow: 0 0 rgba(0, 174, 239, 0), 0 0 rgba(236, 0, 140, 0), 0 0 rgba(255, 230, 0, 0); }
+    }
+
+    /* Two little candles rise on the 22 once the count lands. */
+    .loader-num { position: relative; }
+    .num-candles { position: absolute; left: 0; bottom: 96%; width: var(--digits-w, 1.1em); display: flex; justify-content: space-around; pointer-events: none; }
+    .num-candles i { position: relative; display: block; width: .045em; height: .2em; border-radius: .01em;
+      background: repeating-linear-gradient(35deg, #f3eee8 0 .02em, #ead1c2 .02em .035em);
+      transform: scaleY(0); transform-origin: 50% 100%; transition: transform .7s cubic-bezier(.34, 1.56, .64, 1); }
+    .num-candles i:nth-child(2) { transition-delay: .12s; }
+    .num-candles i::after { content: ''; position: absolute; left: 50%; bottom: 100%; width: .05em; height: .085em; margin-left: -.025em;
+      border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; background: radial-gradient(circle at 50% 70%, #fff4dc 0 22%, #f2b45a 55%, rgba(242,180,90,0) 72%);
+      box-shadow: 0 0 .06em .02em rgba(246, 199, 107, .55); opacity: 0; transition: opacity .4s .6s;
+      transform-origin: 50% 100%; animation: tiny-flicker 1.4s ease-in-out infinite; }
+    .loader.armed .num-candles i { transform: scaleY(1); }
+    .loader.armed .num-candles i::after { opacity: 1; }
+    @keyframes tiny-flicker { 0%, 100% { transform: scale(1, 1) rotate(-2deg); } 40% { transform: scale(.9, 1.08) rotate(3deg); } 70% { transform: scale(1.05, .95); } }
+
+    /* Pencil notes in the margins, written out as the chapter settles. */
+    .pencil { position: absolute; z-index: 5; margin: 0; font-family: 'Caveat', 'Segoe Print', cursive; font-size: clamp(20px, 1.9vw, 30px); line-height: 1.05;
+      color: rgba(251, 248, 244, .92); text-shadow: 0 1px 10px rgba(0, 0, 0, .35); rotate: -4deg; max-width: 15ch; pointer-events: none;
+      clip-path: inset(-10% 100% -10% 0); }
+    .pencil.p1 { right: 7%; top: 58%; }
+    .pencil.t1 { left: 5%; top: 30%; rotate: -6deg; }
+    .pencil.t2 { right: 5%; top: 32%; rotate: 3deg; }
+    .pencil.g1 { left: 5%; top: 30%; }
+    .pencil.w1 { right: 6%; top: 30%; rotate: 4deg; }
+
+    /* The candle throws a warm, flickering light over the back cover; blowing it out dims the room. */
+    .back-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none; mix-blend-mode: screen;
+      background: radial-gradient(circle at var(--gx, 75%) var(--gy, 30%), rgba(246, 199, 107, .26), rgba(246, 199, 107, .09) 22%, transparent 52%);
+      animation: room-flicker 2.3s ease-in-out infinite; transition: opacity .6s ease; }
+    .back > :not(.back-glow):not(.back-dim):not(.confetti) { position: relative; z-index: 1; }
+    .back.lights-out .back-glow { opacity: 0; animation: none; }
+    .back.lights-out .back-dim { animation: dim-room 1.1s ease both; }
+    .back-dim { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: #000; opacity: 0; }
+    @keyframes room-flicker { 0%, 100% { opacity: .85; } 30% { opacity: 1; } 55% { opacity: .78; } 80% { opacity: .95; } }
+    @keyframes dim-room { 0% { opacity: 0; } 30% { opacity: .45; } 100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .ready .masthead, .ready .cover-lines .line h3, .back-glow, .num-candles i::after { animation: none; }
+    }
 
     /* ---------- Film grain ---------- */
     .grain {
@@ -424,7 +477,7 @@
   <div class="loader">
     <div class="loader-top label"><span>Phương Anh Magazine</span><span>Hà Nội</span></div>
     <div class="loader-center">
-      <div class="loader-num" aria-hidden="true"><span data-count>00</span><sup>Nº</sup></div>
+      <div class="loader-num" aria-hidden="true"><span data-count>00</span><span class="num-candles" data-num-candles><i></i><i></i></span><sup>Nº</sup></div>
       <p class="tap-hint">Tap anywhere to begin</p>
       <div class="gate">
         <p>A private edition for Phương Anh</p>
@@ -500,6 +553,7 @@
         </div>
         <div class="shade" data-motion="p-shade"></div>
         <div class="p-title serif" data-motion="p-title">TWENTY-TWO</div>
+        <p class="pencil p1">best smile of the year →</p>
         <div class="over p-dek" data-motion="p-dek">Born October 31, 2004.<br>Twenty-two years in the making.</div>
         <div class="scene-meta"><span>The Portrait</span><span>01 — Cover story<a class="dl" data-dl="portrait" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
         <div class="folio"><b>12</b><span>Phương Anh — Oct 2026</span></div>
@@ -513,10 +567,12 @@
         <figure class="half a breathe">
           <img data-motion="t-a" src="assets/photos/hagiang.jpg" alt="Hà Giang">
           <figcaption>Hà Giang — the loop</figcaption>
+          <p class="pencil t1">0 signal, 100% happy</p>
         </figure>
         <figure class="half b breathe">
           <img data-motion="t-b" src="assets/photos/dalat.jpg" alt="Đà Lạt">
           <figcaption>Đà Lạt — 1,500 m above sea level</figcaption>
+          <p class="pencil t2">coffee in hand, as always</p>
         </figure>
         <div class="seam" data-motion="t-seam"></div>
         <div class="t-mark serif" data-motion="t-mark">FAR <em>/</em> AWAY</div>
@@ -542,6 +598,7 @@
           </defs>
           <rect class="g-rect" style="fill: var(--lilac)" mask="url(#cut2026)"></rect>
         </svg>
+        <p class="pencil g1">four years, one sash. worth it.</p>
         <div class="over g-kicker serif" data-motion="g-kicker">Class of 2026.</div>
         <div class="over g-note" data-motion="g-note">Bachelor of Auditing.<br>National Economics University, Hà Nội.</div>
         <div class="scene-meta"><span>Class of 2026</span><span>03 — Graduation<a class="dl" data-dl="grad" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
@@ -558,6 +615,7 @@
         </div>
         <div class="vignette" data-motion="w-vignette"></div>
         <div class="shade" data-motion="w-shade"></div>
+        <p class="pencil w1">first-day nerves → gone by lunch</p>
         <div class="over w-caption serif" data-motion="w-caption">EY<em>Vietnam.</em></div>
         <div class="over w-small" data-motion="w-small">New desk, new badge,<br>same nerve.</div>
         <div class="scene-meta"><span>A New Chapter</span><span>04 — Work<a class="dl" data-dl="work" data-cursor="Save" aria-label="Save this page as an image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></a></span></div>
@@ -602,6 +660,8 @@
 
   <!-- BACK COVER -->
   <footer class="back" data-back data-chapter="Back cover" data-page="96">
+    <div class="back-glow" aria-hidden="true"></div>
+    <div class="back-dim" aria-hidden="true"></div>
     <div class="back-top label"><span>Back cover</span><span>Nº22</span></div>
     <div class="back-center">
       <div>
@@ -888,6 +948,9 @@
 
       // Wait for the reader to open the issue; the click is also the gesture browsers require before any audio can play.
       function armLoader() {
+        // the candles span the two digits of the 22
+        const numCandles = loader.querySelector('[data-num-candles]');
+        if (numCandles) numCandles.style.width = `${countEl.offsetWidth}px`;
         countEl.textContent = '22';
         loader.classList.add('armed');
         if (!PREVIEW && Date.now() < OPENS_AT) startCountdown();
@@ -1153,6 +1216,19 @@
       /* ---- Mascot beside the candle: created only when the back cover comes into view ---- */
       let giftMascot = null;
       const giftMascotEl = document.querySelector('[data-gift-mascot]');
+      // Centre the back cover's warm glow on the candle flame.
+      const backCover = document.querySelector('[data-back]');
+      function placeGlow() {
+        const flame = document.querySelector('[data-candle] .flame');
+        if (!flame) return;
+        const b = backCover.getBoundingClientRect(), f = flame.getBoundingClientRect();
+        backCover.style.setProperty('--gx', `${f.left + f.width / 2 - b.left}px`);
+        backCover.style.setProperty('--gy', `${f.top + f.height / 2 - b.top}px`);
+      }
+      window.addEventListener('resize', placeGlow);
+      window.addEventListener('load', placeGlow);
+      document.fonts?.ready.then(placeGlow);
+      new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) placeGlow(); }).observe(backCover);
       if (window.Mascot && !SHOT) {
         const seen = new IntersectionObserver((entries) => {
           if (!entries.some((e) => e.isIntersecting)) return;
@@ -1171,6 +1247,7 @@
         delete candle.dataset.cursor;
         cursor.classList.remove('big');
         window.Sound?.play('blow');
+        backCover.classList.add('lights-out');
         setTimeout(() => giftMascot?.play('cheer'), reduce ? 0 : 420);
         setTimeout(() => {
           window.Sound?.play('pop', { volume: .9 });
@@ -1206,6 +1283,8 @@
         const pin = section.querySelector('.scene-pin');
         pin.style.transform = q > 0 && !reduce ? `scale(${1 - q * .06})` : '';
         pin.querySelector('.dim').style.opacity = q * .6;
+        // pencil notes are written out, left to right, as the chapter settles
+        section.querySelectorAll('.pencil').forEach((n) => { n.style.clipPath = `inset(-10% ${(100 - span(p, .78, .98) * 100).toFixed(1)}% -10% 0)`; });
         // A page-turn rustle as the next chapter starts to slide over this one (again after scrolling back).
         if (q > .08 && !section.dataset.turned) { section.dataset.turned = '1'; window.Sound?.play('page-turn', { volume: .55, rate: .95 + Math.random() * .1 }); }
         else if (q < .02 && section.dataset.turned) delete section.dataset.turned;
