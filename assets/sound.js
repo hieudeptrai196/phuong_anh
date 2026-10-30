@@ -41,9 +41,22 @@
   }
   ['pointerdown', 'keydown', 'touchend'].forEach((ev) => window.addEventListener(ev, unlock, { capture: true, passive: true }));
 
-  function play(name, { volume = 1, rate = 1, delay = 0 } = {}) {
-    if (!ctx || !buffers[name]) return;
-    unlock();
+  function play(name, opts = {}) {
+    if (!ctx) return;
+    // Sounds asked for right after the first tap (e.g. the first shuffle) may arrive before the file is
+    // decoded or while the context is still resuming: wait for both instead of dropping them.
+    const asked = performance.now();
+    const go = () => {
+      if (!buffers[name]) {
+        if (performance.now() - asked < 2000) setTimeout(go, 50);
+        return;
+      }
+      if (ctx.state !== 'running') { ctx.resume().then(() => start(name, opts)).catch(() => {}); return; }
+      start(name, opts);
+    };
+    go();
+  }
+  function start(name, { volume = 1, rate = 1, delay = 0 } = {}) {
     const src = ctx.createBufferSource();
     src.buffer = buffers[name];
     src.playbackRate.value = rate;

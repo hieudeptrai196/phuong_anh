@@ -774,15 +774,11 @@
         document.fonts ? document.fonts.ready : Promise.resolve(),
       ]).then(() => { assetsReady = true; });
 
-      let lastCount = 0;
       function tickLoader(now) {
         const elapsed = now - start;
         const timeP = clamp(elapsed / MIN_LOADER_MS);
         const p = assetsReady || elapsed > MAX_LOADER_MS ? timeP : Math.min(timeP, .86);
-        const n = Math.round(smooth(p) * 22);
-        // a soft tick per number; silent if the browser hasn't allowed sound yet (no tap on this page)
-        if (n !== lastCount) { lastCount = n; window.Sound?.play('deal', { volume: .16, rate: 1.4 + n * .02 }); }
-        countEl.textContent = String(n).padStart(2, '0');
+        countEl.textContent = String(Math.round(smooth(p) * 22)).padStart(2, '0');
         bar.style.width = `${smooth(p) * 100}%`;
         if (p >= 1) return armLoader();
         requestAnimationFrame(tickLoader);
