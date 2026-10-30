@@ -113,6 +113,7 @@
     .loader-num sup { font-size: .14em; letter-spacing: .1em; vertical-align: top; margin-left: .3em; font-style: italic; }
     .loader.armed .loader-num { transform: scale(.58) translateY(-12%); }
     .loader-bar { height: 1px; background: rgba(251,248,244,.2); margin-bottom: 14px; position: relative; }
+    .shot .mascot { display: none; }
     .loader-bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--white); }
     .gate { display: grid; justify-items: center; gap: 28px; margin-top: -2vh; opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 1s var(--ease) .45s, transform 1.2s var(--ease) .45s; }
     .loader.armed .gate { opacity: 1; transform: none; pointer-events: auto; }
@@ -314,7 +315,9 @@
     .back .dek { margin-top: 30px; max-width: 34ch; font-size: 10px; line-height: 1.7; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
     .back-bottom { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
     .confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
-    .gift { display: flex; flex-direction: column; align-items: center; }
+    .gift { display: flex; flex-direction: column; align-items: center; position: relative; }
+    /* The mascot stands beside the candle, at the candle's base. */
+    .gift-mascot { --mw: clamp(72px, 7vw, 96px); position: absolute; top: calc(150px - var(--mw) * 1526 / 1355 * .87); /* the Lottie canvas has ~13% empty space under the feet */ left: calc(50% - 30px - var(--mw)); width: var(--mw); aspect-ratio: 1355 / 1526; pointer-events: none; }
     .candle { appearance: none; border: 0; background: none; padding: 0 30px; margin-bottom: -2px; cursor: pointer; color: inherit; position: relative; z-index: 2; }
     .candle svg { width: 46px; height: 150px; display: block; overflow: visible; }
     .candle .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 1.6s ease-in-out infinite; transition: transform .5s var(--ease), opacity .4s; }
@@ -615,6 +618,7 @@
         </div>
       </div>
       <div class="gift" data-reveal style="--d:5">
+        <div class="mascot gift-mascot" data-gift-mascot aria-hidden="true"></div>
         <button class="candle" type="button" data-candle data-cursor="Blow" aria-label="Blow out the candle">
           <svg viewBox="0 0 46 150" aria-hidden="true">
             <defs>
@@ -654,6 +658,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="assets/sound.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie_light.min.js"></script>
+  <script src="assets/mascot.js"></script>
   <script>
     (() => {
       // Scene 04 camera: zoom at the end, and where she stands in the photo (fractions of width/height).
@@ -1103,6 +1109,7 @@
         cursor.classList.remove('big');
         window.Sound?.scratch.stop();
         window.Sound?.play('chime', { volume: .8 });
+        giftMascot?.play('cheer-big');
         window.Sound?.play('pop', { volume: .7, delay: .05 });
         burstFrom(scratchHost, 90, .75);
         document.querySelector('[data-wish-dek]').textContent = 'Scan the code — or tap below — to claim your gift. Happy 22nd.';
@@ -1143,6 +1150,18 @@
       (document.fonts ? document.fonts.ready : Promise.resolve()).then(drawFoil);
       window.addEventListener('resize', () => { if (!scratchDone && !strokes) drawFoil(); });
 
+      /* ---- Mascot beside the candle: created only when the back cover comes into view ---- */
+      let giftMascot = null;
+      const giftMascotEl = document.querySelector('[data-gift-mascot]');
+      if (window.Mascot && !SHOT) {
+        const seen = new IntersectionObserver((entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          seen.disconnect();
+          giftMascot = Mascot.create(giftMascotEl, 'idle');
+        }, { rootMargin: '200px 0px' });
+        seen.observe(giftMascotEl);
+      }
+
       /* ---- Make a wish ---- */
       const candle = document.querySelector('[data-candle]');
       candle.addEventListener('click', () => {
@@ -1152,6 +1171,7 @@
         delete candle.dataset.cursor;
         cursor.classList.remove('big');
         window.Sound?.play('blow');
+        setTimeout(() => giftMascot?.play('cheer'), reduce ? 0 : 420);
         setTimeout(() => {
           window.Sound?.play('pop', { volume: .9 });
           burstFrom(candle, 170, 1);
