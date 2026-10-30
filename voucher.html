@@ -176,6 +176,21 @@
     .cd small { font-family: var(--sans); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; opacity: .6; }
     .cd-row b { font-weight: 400; opacity: .4; }
 
+    /* ---------- Corner mascot with a speech bubble ---------- */
+    .buddy { position: fixed; z-index: 30; left: max(10px, env(safe-area-inset-left, 0px)); bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      width: clamp(64px, 7vw, 92px); cursor: pointer; -webkit-tap-highlight-color: transparent; transform-origin: 50% 100%; }
+    .buddy-figure { width: 100%; aspect-ratio: 1355 / 1526; }
+    .buddy.hop { animation: buddy-hop .6s cubic-bezier(.34, 1.56, .64, 1) 2; }
+    @keyframes buddy-hop { 45% { translate: 0 -22%; } }
+    .buddy-bubble { position: absolute; left: 78%; bottom: 78%; width: max-content; max-width: min(210px, 60vw); margin: 0;
+      padding: 9px 13px; border-radius: 14px 14px 14px 4px; background: var(--paper); color: var(--ink);
+      font: italic 400 14px/1.3 var(--serif); letter-spacing: -.005em; box-shadow: 0 10px 24px -8px rgba(0, 0, 0, .5);
+      opacity: 0; transform: translateY(6px) scale(.94); transform-origin: 0 100%; pointer-events: none;
+      transition: opacity .3s var(--ease), transform .45s cubic-bezier(.34, 1.56, .64, 1); }
+    .buddy-bubble.on { opacity: 1; transform: none; }
+    .render .buddy { display: none; }
+    @media (prefers-reduced-motion: reduce) { .buddy.hop { animation: none; } }
+
     @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
   </style>
 </head>
@@ -274,6 +289,8 @@
   </section>
 
   <script src="assets/sound.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie_light.min.js"></script>
+  <script src="assets/mascot.js"></script>
   <script>
     (() => {
       // The denominations, drawn with equal odds.
@@ -332,6 +349,60 @@
         return;
       }
 
+      /* ---- Corner mascot: idles, chats now and then, and reacts to the draw (English lines) ---- */
+      const LINES = {
+        idle: ['Take your time.', 'Psst… one of these is special.', 'Feeling lucky?', 'I have a good feeling about this.'],
+        tap: ['Hi there!', 'Hehe.', 'Happy birthday, Phương Anh!'],
+        locked: ['Not yet! See you at midnight.', 'Patience… it opens on the 31st.'],
+        shuffle: ['Shuffle, shuffle…', 'Mixing them up!'],
+        spread: ['Pick one, any one.', 'Go on, choose!'],
+        again: ['Again? Love it.', 'Back in the deck they go!'],
+        small: ['Haha, a small one! Draw again?', 'Cute! Want another go?'],
+        mid: ['Nice one!', 'Ooh, not bad at all!'],
+        big: ['WOW! The big one!', 'Jackpot! Happy birthday!'],
+      };
+      const pickLine = (k) => LINES[k][Math.floor(Math.random() * LINES[k].length)];
+      const buddy = (() => {
+        const wrap = document.createElement('div');
+        wrap.className = 'buddy';
+        wrap.setAttribute('aria-hidden', 'true');
+        wrap.innerHTML = '<div class="buddy-figure"></div><p class="buddy-bubble" aria-live="polite"></p>';
+        document.body.appendChild(wrap);
+        const bubble = wrap.querySelector('.buddy-bubble');
+        const m = window.Mascot ? Mascot.create(wrap.querySelector('.buddy-figure'), 'look') : null;
+        let busyUntil = 0, bubbleTimer = 0, poseTimer = 0;
+        function say(text, ms = 3200) {
+          bubble.textContent = text;
+          bubble.classList.add('on');
+          clearTimeout(bubbleTimer);
+          bubbleTimer = setTimeout(() => bubble.classList.remove('on'), ms);
+        }
+        function act(pose, line, { ms = 3000, hop = false } = {}) {
+          busyUntil = Date.now() + ms;
+          m?.play(pose);
+          if (line) say(line, ms);
+          if (hop) { wrap.classList.remove('hop'); void wrap.offsetWidth; wrap.classList.add('hop'); }
+          clearTimeout(poseTimer);
+          poseTimer = setTimeout(() => m?.play('look'), ms);
+        }
+        wrap.addEventListener('click', () => { act('wave', pickLine('tap')); window.Sound?.play('pop', { volume: .5 }); });
+        // Now and then, when nothing else is going on, a wave or a little remark.
+        setInterval(() => {
+          if (Date.now() < busyUntil || Math.random() < .35) return;
+          if (Math.random() < .5) act('wave', pickLine(document.querySelector('[data-locked]').hidden ? 'idle' : 'locked'));
+          else say(pickLine(document.querySelector('[data-locked]').hidden ? 'idle' : 'locked'));
+        }, 16000);
+        return {
+          say: (k) => { busyUntil = Date.now() + 2500; say(pickLine(k), 2500); },
+          react(v) {
+            if (!v) return;
+            if (v.value === JACKPOT) act('cheer-big', pickLine('big'), { ms: 6000, hop: true });
+            else if (FIRST_DRAW_VALUES.includes(v.value)) act('wave', pickLine('small'), { ms: 4500 });
+            else act('cheer', pickLine('mid'), { ms: 4500 });
+          },
+        };
+      })();
+
       /* ---- Locked until her birthday, Hà Nội time; ?lock=off (or ?preview) opens it early ---- */
       const OPENS_AT = new Date('2026-10-31T00:00:00+07:00').getTime();
       const unlocked = params.get('lock') === 'off' || params.has('preview') || Date.now() >= OPENS_AT;
@@ -352,6 +423,7 @@
         };
         tick();
         setInterval(tick, 1000);
+        setTimeout(() => buddy.say('locked'), 1200);
         return;
       }
 
@@ -481,6 +553,7 @@
         status.textContent = 'Tap a card to draw';
         shuffleBtn.textContent = 'Shuffle again';
         shuffleBtn.disabled = false;
+        buddy.say('spread');
         dealing = false;
       }
       // Once spread, drop the dealing delays so a hovered card lifts straight away.
@@ -489,7 +562,7 @@
       }
 
       // The deck waits for a tap: that tap is also what lets the browser play the shuffle sound.
-      shuffleBtn.addEventListener('click', () => deal());
+      shuffleBtn.addEventListener('click', () => { buddy.say('shuffle'); deal(); });
 
       // The first draw of a visit is always a small one (1.000₫ or 2.000₫); later draws are fully
       // random but never repeat the value just drawn.
@@ -527,6 +600,7 @@
 
       // Drawing again gathers the cards, shuffles the deck and spreads it out again.
       document.querySelector('[data-again]').addEventListener('click', () => {
+        buddy.say('again');
         reveal.hidden = true;
         deck.hidden = false;
         window.scrollTo({ top: 0 });
@@ -659,6 +733,7 @@
             after.classList.add('on');
             hint.textContent = 'Drag to turn · Tap to flip';
             // The big one gets a birthday cheer and confetti; the rest a small win chime.
+            buddy.react(current);
             if (current && current.value === JACKPOT) {
               window.Sound?.play('cheer', { volume: .85 });
               const r = stage.getBoundingClientRect();
